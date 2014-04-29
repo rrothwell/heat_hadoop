@@ -4,6 +4,7 @@ Parameters:
     KeyName: 
         Description: "Name of an existing EC2 KeyPair to enable SSH access to the instance. "
         Type: "String"
+        Default: "richardr_on_nectar"
     InstanceType:
         Description: "The size of the VM. "
         Type: String
@@ -18,13 +19,57 @@ Parameters:
         Description: "The base VM image used to build the cluster. "
         Type: String
         Default: "96761a90-635b-4718-8deb-f4ff57632db4"
+    AvailabilityZone: 
+        Description: "Location of the running cluster. "
+        Type: String
+        Default: "sa"
+        AllowedValues:
+            - NCI
+            - melbourne
+            - melbourne-np
+            - melbourne-qh2
+            - qld
+            - sa
 Resources: 
-    MyInstance: 
+    # http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::EC2::SecurityGroup
+    DefaultSecurityGroup:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+            GroupDescription: Standard firewall rules
+            SecurityGroupIngress:
+                - {IpProtocol: icmp, FromPort: '-1', ToPort: '-1', CidrIp : 0.0.0.0/0}
+                - {IpProtocol: tcp, FromPort: '22', ToPort: '22', CidrIp: 0.0.0.0/0}
+                - {IpProtocol: tcp, FromPort: '80', ToPort: '80', CidrIp: 0.0.0.0/0}
+                - {IpProtocol: tcp, FromPort: '443', ToPort: '443', CidrIp: 0.0.0.0/0}
+    MemberSecurityGroup:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+            GroupDescription: Use a dummy security group as a tag signifying belonging to the cluster.
+    ClusterSecurityGroup:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+            GroupDescription: Cluster commmunications allowed only from cluster members
+            SecurityGroupIngress:
+                - {IpProtocol: tcp, FromPort: '1', ToPort: '65535', SourceSecurityGroupName: {Ref: MemberSecurityGroup}}
+    WebManagementSecurityGroup:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+            GroupDescription: Expose the Hadoop web-based management interfaces.
+            SecurityGroupIngress:
+                - {IpProtocol: tcp, FromPort: '50070', ToPort: '50070', CidrIp: 0.0.0.0/0}
+                - {IpProtocol: tcp, FromPort: '50030', ToPort: '50030', CidrIp: 0.0.0.0/0}
+                - {IpProtocol: tcp, FromPort: '50060', ToPort: '50060', CidrIp: 0.0.0.0/0}
+                - {IpProtocol: tcp, FromPort: '50075', ToPort: '50075', CidrIp: 0.0.0.0/0}
+                - {IpProtocol: tcp, FromPort: '50090', ToPort: '50090', CidrIp: 0.0.0.0/0}
+                - {IpProtocol: tcp, FromPort: '60010', ToPort: '60010', CidrIp: 0.0.0.0/0}
+    # http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::EC2::Instance
+    HadoopMaster: 
         Type: "AWS::EC2::Instance"
         Properties: 
             KeyName: {Ref: KeyName}
             ImageId: {Ref: ImageId}
             InstanceType: {Ref: InstanceType}
+            AvailabilityZone: {Ref: AvailabilityZone}
             UserData: 
                 Fn::Base64: "80"
 Outputs: 
@@ -33,9 +78,9 @@ Outputs:
             Fn::Join: 
                 - ""
                 - 
-                    - "ssh ec2-user@"
+                    - "ssh hadoop-admin@"
                     - 
                         Fn::GetAtt: 
-                            - "MyInstance"
+                            - "HadoopMaster"
                             - "PublicIp"
         Description: "My ssh command"
