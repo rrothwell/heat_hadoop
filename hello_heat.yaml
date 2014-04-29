@@ -76,7 +76,27 @@ Resources:
                 - {Ref: ClusterSecurityGroup}
                 - {Ref: WebManagementSecurityGroup}
             UserData: 
-                Fn::Base64: "80"
+                Fn::Base64:
+                    Fn::Replace:
+                      - _tm_username: {Ref: TileMillUserName}
+                        _tm_password: {Ref: TileMillPassword}
+                        _tm_dbusername: {Ref: DBUsername}
+                        _tm_dbpassword: {Ref: DBPassword}
+                        _tm_timezone: {Ref: Timezone}
+                        _POSTGRESDIR: /mnt/var/lib
+                      - |
+                        #!/bin/bash -v
+                        apt-get install -y git
+                        cd /tmp
+                        git clone https://github.com/stevage/tilemill-server
+                        cd tilemill-server
+                        export tm_dbusername='_tm_dbusername'
+                        export tm_dbpassword='_tm_dbpassword'
+                        export tm_username='_tm_username'
+                        export tm_password='_tm_password'
+                        export tm_timezone='_tm_timezone'
+                        export POSTGRESDIR='_POSTGRESDIR'
+                              ./install.sh
 Outputs: 
     InstanceIp: 
         Value: 
