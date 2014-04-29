@@ -85,6 +85,7 @@ Resources:
                 apt-get install -y git
                 cd /tmp
                 wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/install_cloudera_1click.sh
+                chmod u+x install_cloudera_1click.sh
                 ./install_cloudera_1click.sh
 Outputs: 
     InstanceIp: 
@@ -92,7 +93,8 @@ Outputs:
             Fn::Join: 
                 - ""
                 - 
-                    - "ssh -i /path/to/private/key/file root@"
+                    #- "ssh -i /path/to/private/key/file root@"
+                    - "ssh root@"
                     - 
                         Fn::GetAtt: 
                             - "HadoopMaster"
