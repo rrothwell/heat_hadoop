@@ -1,5 +1,5 @@
 HeatTemplateFormatVersion: '2012-12-12'
-Description: "Create an Hadoop Cluster. "
+Description: "An Hadoop Cluster. "
 Parameters: 
     KeyName: 
         Description: "Name of an existing EC2 KeyPair to enable SSH access to the instance. "
@@ -18,7 +18,10 @@ Parameters:
     ImageId:
         Description: "The base VM image used to build the cluster. "
         Type: String
-        Default: "96761a90-635b-4718-8deb-f4ff57632db4"
+        # Customised Ubuntu 12.04 image on NeCTAR
+        # Snapshot called heat_hadoop_seed_29Apr2014.
+        # Made by running sudo apt-get install python-setuptools
+        Default: "c64cacf2-c269-4a95-aae6-7f1a3913f9eb"
     AvailabilityZone: 
         Description: "Location of the running cluster. "
         Type: String
@@ -75,35 +78,21 @@ Resources:
                 - {Ref: MemberSecurityGroup}
                 - {Ref: ClusterSecurityGroup}
                 - {Ref: WebManagementSecurityGroup}
-            UserData: 
-                Fn::Base64:
-                    Fn::Replace:
-                      - _tm_username: {Ref: TileMillUserName}
-                        _tm_password: {Ref: TileMillPassword}
-                        _tm_dbusername: {Ref: DBUsername}
-                        _tm_dbpassword: {Ref: DBPassword}
-                        _tm_timezone: {Ref: Timezone}
-                        _POSTGRESDIR: /mnt/var/lib
-                      - |
-                        #!/bin/bash -v
-                        apt-get install -y git
-                        cd /tmp
-                        git clone https://github.com/stevage/tilemill-server
-                        cd tilemill-server
-                        export tm_dbusername='_tm_dbusername'
-                        export tm_dbpassword='_tm_dbpassword'
-                        export tm_username='_tm_username'
-                        export tm_password='_tm_password'
-                        export tm_timezone='_tm_timezone'
-                        export POSTGRESDIR='_POSTGRESDIR'
-                              ./install.sh
+            UserData: |
+                #!/bin/bash -v
+                apt-get update; apt-get upgrade
+                updatedb
+                apt-get install -y git
+                cd /tmp
+                wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/install_cloudera_1click.sh
+                ./install_cloudera_1click.sh
 Outputs: 
     InstanceIp: 
         Value: 
             Fn::Join: 
                 - ""
                 - 
-                    - "ssh hadoop-admin@"
+                    - "ssh -i /path/to/private/key/file root@"
                     - 
                         Fn::GetAtt: 
                             - "HadoopMaster"
