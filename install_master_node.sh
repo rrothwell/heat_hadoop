@@ -21,4 +21,9 @@ apt-get -y install python-software-properties
 ./install_java.sh
 
 # Set up DNS
+echo -e $hadoop_master_ip >> ~/diagnostic_messages;
+echo -e $hadoop_master_name >> ~/diagnostic_messages;
 echo -e $hadoop_master_domain >> ~/diagnostic_messages;
+
+echo -e "$hadoop_master_ip\t$hadoop_master_domain\t$hadoop_master_name" >> /etc/hosts;
+
