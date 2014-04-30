@@ -26,10 +26,21 @@ apt-get -y install python-software-properties
 # Download and install Java.
 ./install_java.sh
 
-# Set up DNS
-echo -e $hadoop_master_ip >> ~/diagnostic_messages;
-echo -e $hadoop_master_name >> ~/diagnostic_messages;
-echo -e $hadoop_master_domain >> ~/diagnostic_messages;
-
+# Set up DNS in /etc/hosts
 echo -e "$hadoop_master_ip\t$hadoop_master_domain\t$hadoop_master_name" >> /etc/hosts;
+
+# -------------------------------------------
+# Setup the Hadoop Cluster Structure
+# -------------------------------------------
+
+# Now refer to this:
+# http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_4_4.html
+
+# install the "1 click" package. Do this for ALL machines.
+wget http://archive.cloudera.com/cdh4/one-click-install/precise/amd64/cdh4-repository_1.0_all.deb
+dpkg -i cdh4-repository_1.0_all.deb
+
+# On each of the VM's in the cluster download and install the repo key.
+wget -qO - http://archive.cloudera.com/cdh4/ubuntu/precise/amd64/cdh/archive.key | apt-key add -
+
 
