@@ -82,8 +82,10 @@ Resources:
                 #!/bin/bash -v
                 apt-get update; apt-get upgrade
                 updatedb
-                apt-get install -y git
+                #apt-get install -y git
                 cd /tmp
+                wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/install_java.sh
+                chmod u+x install_java.sh
                 wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/install_cloudera_1click.sh
                 chmod u+x install_cloudera_1click.sh
                 ./install_cloudera_1click.sh
@@ -93,10 +95,9 @@ Outputs:
             Fn::Join: 
                 - ""
                 - 
-                    #- "ssh -i /path/to/private/key/file root@"
-                    - "ssh root@"
+                    - "ssh -i /path/to/private/key/file.pem root@"
                     - 
                         Fn::GetAtt: 
                             - "HadoopMaster"
                             - "PublicIp"
-        Description: "My ssh command"
+        Description: "Login via ssh using this command: "
