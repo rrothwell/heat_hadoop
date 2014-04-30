@@ -1,5 +1,9 @@
 # ===========================================
-# Install Cloudera Hadoop version 4
+# Install Auxiliary Node
+# Based on Cloudera Hadoop version 4
+#
+# Installs the following services:
+#	SecondaryNameNode
 # ===========================================
 
 # Resources:
@@ -14,9 +18,3 @@ apt-get -y install python-software-properties
 
 # Download and install Java.
 ./install_java.sh
-
-
-
-
-
-

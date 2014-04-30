@@ -1,0 +1,121 @@
+HeatTemplateFormatVersion: '2012-12-12'
+Description: "An Hadoop Cluster. "
+Parameters: 
+    KeyName: 
+        Description: "Name of an existing EC2 KeyPair to enable SSH access to the instance. "
+        Type: "String"
+        Default: "richardr_on_nectar"
+    InstanceType:
+        Description: "The size of the VM. "
+        Type: String
+        Default: "m1.small"
+        AllowedValues:
+            - m1.small
+            - m1.medium
+            - m1.large
+            - m1.xlarge
+            - m1.xxlarge
+    ImageId:
+        Description: "The base VM image used to build the cluster. "
+        Type: String
+        # Customised Ubuntu 12.04 image on NeCTAR
+        # Snapshot called heat_hadoop_seed_29Apr2014.
+        # Made by running sudo apt-get install python-setuptools
+        Default: "c64cacf2-c269-4a95-aae6-7f1a3913f9eb"
+    AvailabilityZone: 
+        Description: "Location of the running cluster. "
+        Type: String
+        Default: "sa"
+        AllowedValues:
+            - NCI
+            - melbourne
+            - melbourne-np
+            - melbourne-qh2
+            - qld
+            - sa
+    BaseDomain: 
+        Description: "DynDNS base domain name. Used to synthesise cluster node domain names. "
+        Type: String
+        Default: "doesntexist.org"
+    MasterNodeName: 
+        Description: "Name for Hadoop master node, hosting JobTracker and NameNode. Used to construct domain name. "
+        Type: String
+        Default: "hadoop-master"
+    AuxiliaryNodeName: 
+        Description: "Name for Hadoop auxiliary node, hosting SecondaryNameNode. Used to construct domain name. "
+        Type: String
+        Default: "hadoop-auxiliary"
+Resources: 
+    # http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::EC2::SecurityGroup
+    DefaultSecurityGroup:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+            GroupDescription: Standard firewall rules
+            SecurityGroupIngress:
+                - {IpProtocol: icmp, FromPort: '-1', ToPort: '-1', CidrIp : 0.0.0.0/0}
+                - {IpProtocol: tcp, FromPort: '22', ToPort: '22', CidrIp: 0.0.0.0/0}
+                - {IpProtocol: tcp, FromPort: '80', ToPort: '80', CidrIp: 0.0.0.0/0}
+                - {IpProtocol: tcp, FromPort: '443', ToPort: '443', CidrIp: 0.0.0.0/0}
+    MemberSecurityGroup:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+            GroupDescription: Use a dummy security group as a tag signifying belonging to the cluster.
+    ClusterSecurityGroup:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+            GroupDescription: Cluster commmunications allowed only from cluster members
+            SecurityGroupIngress:
+                - {IpProtocol: tcp, FromPort: '1', ToPort: '65535', SourceSecurityGroupName: {Ref: MemberSecurityGroup}}
+    WebManagementSecurityGroup:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+            GroupDescription: Expose the Hadoop web-based management interfaces.
+            SecurityGroupIngress:
+                - {IpProtocol: tcp, FromPort: '50070', ToPort: '50070', CidrIp: 0.0.0.0/0}
+                - {IpProtocol: tcp, FromPort: '50030', ToPort: '50030', CidrIp: 0.0.0.0/0}
+                - {IpProtocol: tcp, FromPort: '50060', ToPort: '50060', CidrIp: 0.0.0.0/0}
+                - {IpProtocol: tcp, FromPort: '50075', ToPort: '50075', CidrIp: 0.0.0.0/0}
+                - {IpProtocol: tcp, FromPort: '50090', ToPort: '50090', CidrIp: 0.0.0.0/0}
+                - {IpProtocol: tcp, FromPort: '60010', ToPort: '60010', CidrIp: 0.0.0.0/0}
+    # http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::EC2::Instance
+    HadoopMaster: 
+        Type: "AWS::EC2::Instance"
+        Properties: 
+            KeyName: {Ref: KeyName}
+            ImageId: {Ref: ImageId}
+            InstanceType: {Ref: InstanceType}
+            AvailabilityZone: {Ref: AvailabilityZone}
+            SecurityGroups: 
+                - {Ref: DefaultSecurityGroup}
+                - {Ref: MemberSecurityGroup}
+                - {Ref: ClusterSecurityGroup}
+                - {Ref: WebManagementSecurityGroup}
+            UserData: |
+                Fn::Base64:
+                    Fn::Replace:
+                      - _base_domain_: {Ref: BaseDomain}
+                        _hadoop_master_name_: {Ref: MasterNodeName}
+                      - |
+                        #!/bin/bash -v
+                        apt-get update; apt-get upgrade
+                        updatedb
+                        #apt-get install -y git
+                        cd /tmp
+                        wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/install_java.sh
+                        chmod u+x install_java.sh
+                        wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/install_master_node.sh
+                        chmod u+x install_master_node.sh
+                        export hadoop_master_domain='_hadoop_master_name_'.'_base_domain_'
+                        ./install_master_node.sh
+Outputs: 
+    InstanceIp: 
+        Description: "Login via ssh using this command: "
+        Value: 
+            Fn::Join: 
+                - ""
+                - 
+                    - "ssh -i /path/to/private/key/file.pem root@"
+                    - 
+                        Fn::GetAtt: 
+                            - "HadoopMaster"
+                            - "PublicIp"
