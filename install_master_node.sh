@@ -19,3 +19,6 @@ apt-get -y install python-software-properties
 
 # Download and install Java.
 ./install_java.sh
+
+# Set up DNS
+echo $hadoop_master_domain
