@@ -17,6 +17,12 @@
 # Preparation.
 apt-get -y install python-software-properties
 
+# cfn tools install
+#apt-get -y install python-argparse cloud-init python-psutil python-pip
+#apt-get -y remove python-boto
+#pip install 'boto==2.5.2' heat-cfntools
+#cfn-create-aws-symlinks -s /usr/local/bin/
+
 # Download and install Java.
 ./install_java.sh
 

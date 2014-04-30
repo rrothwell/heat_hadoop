@@ -78,6 +78,7 @@ Resources:
                 - {IpProtocol: tcp, FromPort: '50090', ToPort: '50090', CidrIp: 0.0.0.0/0}
                 - {IpProtocol: tcp, FromPort: '60010', ToPort: '60010', CidrIp: 0.0.0.0/0}
     # http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::EC2::Instance
+    # To get the node IP address see: https://wiki.openstack.org/wiki/Heat/ApplicationDeployment
     HadoopMaster: 
         Type: "AWS::EC2::Instance"
         Properties: 
@@ -95,7 +96,6 @@ Resources:
                     Fn::Replace:
                       - _base_domain_: {Ref: BaseDomain}
                         _hadoop_master_name_: {Ref: MasterNodeName}
-                        _hadoop_master_ip_: {Fn::GetAtt: ["HadoopMaster", "PublicIp"]}
                       - |
                         #!/bin/bash -v
                         apt-get update; apt-get upgrade
@@ -108,7 +108,7 @@ Resources:
                         chmod u+x install_master_node.sh
                         export hadoop_master_name=_hadoop_master_name_
                         export hadoop_master_domain=_hadoop_master_name_._base_domain_
-                        export hadoop_master_ip=_hadoop_master_ip_
+                        export hadoop_master_ip=`wget -qO -  http://169.254.169.254/latest/meta-data/local-ipv4`
                         ./install_master_node.sh
 Outputs: 
     InstanceIp: 
