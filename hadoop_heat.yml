@@ -90,7 +90,7 @@ Resources:
                 - {Ref: MemberSecurityGroup}
                 - {Ref: ClusterSecurityGroup}
                 - {Ref: WebManagementSecurityGroup}
-            UserData: |
+            UserData:
                 Fn::Base64:
                     Fn::Replace:
                       - _base_domain_: {Ref: BaseDomain}
