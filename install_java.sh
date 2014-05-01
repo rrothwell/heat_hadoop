@@ -1,5 +1,12 @@
+#!/bin/bash -v
 # ===========================================
-# Install Oracle Java version 7
+# Install Java on ALL machines.
+# Oracle Java version 7
+
+# See: http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_29.html
+# And: http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_29_1.html?scroll=topic_29_1
+# But as far as I can tell the instructions there are not necessary as far as setting
+# JAVA_HOME and PATH are concerned.
 # ===========================================
 
 #Register repo
@@ -11,11 +18,9 @@ echo debconf shared/accepted-oracle-license-v1-1 select true | debconf-set-selec
 echo debconf shared/accepted-oracle-license-v1-1 seen true | debconf-set-selections
 
 # Install.
-apt-get -y install oracle-java7-installer
+apt-get -y install java-common  oracle-java7-installer  oracle-java7-set-default
 
-# Register alternatives. Maybe some redundancy here.
-apt-get install java-common 
-apt-get install oracle-java7-set-default
+# Register alternatives. Maybe some redundancy here that can be removed later.
 update-java-alternatives -s java-7-oracle
 
 # Set the JAVA environment variables.
