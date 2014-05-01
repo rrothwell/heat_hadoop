@@ -97,7 +97,7 @@ cat <<DELIMITER > /etc/hadoop/conf.unicarbkb/hdfs-site.xml
         <name>dfs.datanode.failed.volumes.tolerated</name>
         <value>3</value>
     </property>
-    <!-- Begin secondarynamenode config -- needs this to find the primary namenode. -->
+    <!-- Begin secondarynamenode config - needs this to find the primary namenode. -->
     <property>
         <name>dfs.namenode.http-address</name>
         <value>$hadoop_master_domain:50070</value>
