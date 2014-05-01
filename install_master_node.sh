@@ -55,3 +55,35 @@ cat <<DELIMITER > /etc/hadoop/conf.unicarbkb/core-site.xml
     </property>
 </configuration>
 DELIMITER
+
+# Edit hdfs-site.xml on master, slave 1, slave 2, slave 3 etc..
+# I dont know what the significance of having an nfs mount is at this stage.
+# Don't have an nfs mount so will create a proxy for it at /mnt/storage/nfs/nn
+# May need to change file paths to URI's file:///
+# Suspect that the use of multiple mount points (/data/1/dfs/dn /data/2/dfs/dn /data/3/dfs/dn /data/4/dfs/dn)
+# doesn't make much sense when we have access to just one large (ephemeral) volume per OpenStack VM.
+
+cat <<DELIMITER > /etc/hadoop/conf.unicarbkb/hdfs-site.xml
+<configuration>
+    <property>
+        <name>dfs.name.dir</name>
+        <value>/var/lib/hadoop-hdfs/cache/hdfs/dfs/name</value>
+    </property>
+    <property>
+        <name>dfs.permissions.superusergroup</name>
+        <value>hadoop</value>
+    </property>
+    <property>
+        <name>dfs.namenode.name.dir</name>
+        <value>file:///data/1/dfs/nn,file:///nfsmount/dfs/nn</value>
+    </property>
+    <property>
+        <name>dfs.datanode.data.dir</name>
+        <value>file:///data/1/dfs/dn,file:///data/2/dfs/dn,file:///data/3/dfs/dn,file:///data/4/dfs/dn</value>
+    </property>
+    <property>
+        <name>dfs.datanode.failed.volumes.tolerated</name>
+        <value>3</value>
+    </property>
+#</configuration>
+DELIMITER
