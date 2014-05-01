@@ -155,7 +155,7 @@ cat <<DELIMITER > /etc/hadoop/conf.unicarbkb/mapred-site.xml
         <name>mapred.local.dir</name>
         <value>/data/1/mapred/local,/data/2/mapred/local,/data/3/mapred/local,/data/4/mapred/local</value>
     </property>
-    <!-- Begin Health Checker -- health check script runs on slaves/datanodes. -->
+    <!-- Begin Health Checker - health check script runs on slaves/datanodes. -->
     <property>
         <name>mapred.healthChecker.script.path</name>
         <value>/health_check.sh</value>

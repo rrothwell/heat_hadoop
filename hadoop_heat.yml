@@ -96,7 +96,7 @@ Resources:
                     Fn::Replace:
                       - _base_domain_: {Ref: BaseDomain}
                         _hadoop_master_name_: {Ref: MasterNodeName}
-                        _hadoop_auxiliary_name_: {Ref: AuxilaryNodeName}
+                        _hadoop_auxiliary_name_: {Ref: AuxiliaryNodeName}
                       - |
                         #!/bin/bash -v
                         apt-get update; apt-get upgrade
