@@ -104,6 +104,8 @@ Resources:
                         cd /tmp
                         wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/install_java.sh
                         chmod u+x install_java.sh
+                        wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/bind_hadoop_directories.sh
+                        chmod u+x bind_hadoop_directories.sh
                         wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/install_common.sh
                         chmod u+x install_common.sh
                         wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/install_master_node.sh
@@ -111,6 +113,7 @@ Resources:
                         export hadoop_master_name=_hadoop_master_name_
                         export hadoop_master_domain=_hadoop_master_name_._base_domain_
                         export hadoop_master_ip=`wget -qO -  http://169.254.169.254/latest/meta-data/local-ipv4`
+                        export hadoop_master_hostname=`wget -qO -  http://169.254.169.254/latest/meta-data/local-host`
                         ./install_common.sh
                         ./install_master_node.sh
 Outputs: 
