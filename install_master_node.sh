@@ -87,3 +87,15 @@ cat <<DELIMITER > /etc/hadoop/conf.unicarbkb/hdfs-site.xml
     </property>
 #</configuration>
 DELIMITER
+
+# Create the directories and set the permissions
+# Do on all cluster members.
+mkdir -p /data/1/dfs/nn /nfsmount/dfs/nn
+mkdir -p /data/1/dfs/dn /data/2/dfs/dn /data/3/dfs/dn /data/4/dfs/dn
+chown -R hdfs:hdfs /data/1/dfs/nn /nfsmount/dfs/nn /data/1/dfs/dn /data/2/dfs/dn /data/3/dfs/dn /data/4/dfs/dn
+chmod go-rx /data/1/dfs/nn /nfsmount/dfs/nn
+
+# Format the hdfs file system as the hdfs user.
+# ON the master only is OK.
+sudo -u hdfs hadoop namenode -format
+
