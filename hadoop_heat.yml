@@ -96,6 +96,7 @@ Resources:
                     Fn::Replace:
                       - _base_domain_: {Ref: BaseDomain}
                         _hadoop_master_name_: {Ref: MasterNodeName}
+                        _hadoop_auxiliary_name_: {Ref: AuxilaryNodeName}
                       - |
                         #!/bin/bash -v
                         apt-get update; apt-get upgrade
@@ -113,7 +114,9 @@ Resources:
                         export hadoop_master_name=_hadoop_master_name_
                         export hadoop_master_domain=_hadoop_master_name_._base_domain_
                         export hadoop_master_ip=`wget -qO -  http://169.254.169.254/latest/meta-data/local-ipv4`
-                        export hadoop_master_hostname=`wget -qO -  http://169.254.169.254/latest/meta-data/local-hostname`
+                        export hadoop_master_hostname=`hostname`
+                        export hadoop_auxiliary_name=_hadoop_auxiliary_name_
+                        export hadoop_auxiliary_domain=_hadoop_auxiliary_name_._base_domain_
                         ./install_common.sh
                         ./install_master_node.sh
 Outputs: 
