@@ -109,6 +109,8 @@ Resources:
                         chmod u+x bind_hadoop_directories.sh
                         wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/install_common.sh
                         chmod u+x install_common.sh
+                        wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/configure_common.sh
+                        chmod u+x configure_common.sh
                         wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/install_master_node.sh
                         chmod u+x install_master_node.sh
                         export hadoop_master_name=_hadoop_master_name_
@@ -119,6 +121,7 @@ Resources:
                         export hadoop_auxiliary_domain=_hadoop_auxiliary_name_._base_domain_
                         ./install_common.sh
                         ./install_master_node.sh
+                        ./configure_common.sh
 Outputs: 
     InstanceIp: 
         Description: "Login via ssh using this command: "
