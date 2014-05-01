@@ -16,4 +16,12 @@
 # Ignore "start failed: message.
 apt-get -y install hadoop-0.20-mapreduce-jobtracker hadoop-hdfs-namenode hadoop-client
 
+# Upload and run on ALL VM's.
+# This is mainly for the master. 
+# Maybe not necessary to apply the entire script to the slaves as some of the 
+# directories will be for client apps only.
+# If hadoop components are installed after this the relevant section in the script
+# MUST be executed in isolation.
+./bind_hadoop_directories.sh
+
 
