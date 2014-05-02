@@ -21,13 +21,14 @@
 # ===========================================
 
 # Preparation.
-apt-get -y install python-software-properties
+apt-get -y install python-software-properties python-setuptools python-pip
+#pip install python-heatclient
 
-# cfn tools install - NOT needed yet.
-#apt-get -y install python-argparse cloud-init python-psutil python-pip
-#apt-get -y remove python-boto
-#pip install 'boto==2.5.2' heat-cfntools
-#cfn-create-aws-symlinks -s /usr/local/bin/
+# cfn tools install - needed to support install packages, start services, handle updates, and wait for applications.
+apt-get -y install python-argparse cloud-init python-psutil python-pip
+apt-get -y remove python-boto
+pip install 'boto==2.5.2' heat-cfntools
+cfn-create-aws-symlinks -s /usr/local/bin/
 
 # Download and install Java.
 ./install_java.sh
