@@ -5,6 +5,12 @@ Parameters:
         Description: "Name of an existing EC2 KeyPair to enable SSH access to the instance. "
         Type: "String"
         Default: "richardr_on_nectar"
+    SlaveCount:
+        Type: "Number"
+        Default: "2"
+        MinValue: "1"
+        MaxValue: "100"
+        Description: "The number of instances to create"
     InstanceType:
         Description: "The size of the VM. "
         Type: String
