@@ -48,5 +48,10 @@ dpkg -i cdh4-repository_1.0_all.deb
 wget -qO - http://archive.cloudera.com/cdh4/ubuntu/precise/amd64/cdh/archive.key | apt-key add -
 apt-get update
 
+#apt-get install zookeeper zookeeper-server
+#zookeeper-server init --myid=1 # --force
+#service zookeeper-server start
+#vi /etc/zookeeper/conf.dist/zoo.cfg
+
 
 

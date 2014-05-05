@@ -13,5 +13,7 @@
 
 # Master: JobTracker host and  NameNode host
 # Probably should have separate VM's for jobtracker and namenode.
+# This consideration will apply with more force if the number of slaves
+# exceeds a few 10's of nodes.
 # Ignore "start failed: message.
 apt-get -y install hadoop-0.20-mapreduce-jobtracker hadoop-hdfs-namenode hadoop-client

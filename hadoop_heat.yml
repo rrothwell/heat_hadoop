@@ -28,8 +28,9 @@ Parameters:
         # Snapshot called heat_hadoop_seed_29Apr2014.
         # Made by running sudo apt-get install python-setuptools
         # Add more image options later.
-        Default: ubuntu-12.04
-        AllowedValues: [ubuntu-12.04]
+        Default: c64cacf2-c269-4a95-aae6-7f1a3913f9eb
+        #Default: "ubuntu-12.04"
+        #AllowedValues: ["ubuntu-12.04","ubuntu-12.4"]
     AvailabilityZone: 
         Description: "Location of the running cluster. "
         Type: String
@@ -57,9 +58,9 @@ Parameters:
         Description: "Name for Hadoop salve node, hosting TaskTracker and DataNode. Used to construct domain name. "
         Type: String
         Default: "hadoop-slave"
-Mappings:
-    InstanceId:
-        'ubuntu-12.04': {ImageId: c64cacf2-c269-4a95-aae6-7f1a3913f9eb}
+#Mappings:
+#    InstanceId:
+#        'ubuntu-12.04': {ImageId: c64cacf2-c269-4a95-aae6-7f1a3913f9eb}
 Resources: 
     # http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::EC2::SecurityGroup
     DefaultSecurityGroup:
@@ -94,60 +95,62 @@ Resources:
                 - {IpProtocol: tcp, FromPort: '60010', ToPort: '60010', CidrIp: 0.0.0.0/0}
     # http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::EC2::Instance
     # To get the node IP address see: https://wiki.openstack.org/wiki/Heat/ApplicationDeployment
-    HadoopMaster: 
-        Type: "AWS::EC2::Instance"
-        Properties: 
-            KeyName: {Ref: KeyName}
-            ImageId: Fn::FindInMap: [InstanceId, {Ref: ImageName}, ImageId] 
-            InstanceType: {Ref: InstanceType}
-            AvailabilityZone: {Ref: AvailabilityZone}
-            SecurityGroups: 
-                - {Ref: DefaultSecurityGroup}
-                - {Ref: MemberSecurityGroup}
-                - {Ref: ClusterSecurityGroup}
-                - {Ref: WebManagementSecurityGroup}
-            UserData:
-                Fn::Base64:
-                    Fn::Replace:
-                      - _base_domain_: {Ref: BaseDomain}
-                        _hadoop_master_name_: {Ref: MasterNodeName}
-                        _hadoop_auxiliary_name_: {Ref: AuxiliaryNodeName}
-                        _hadoop_slave_name_: {Ref: SlaveNodeName}
-                      - |
-                        #!/bin/bash -v
-                        apt-get update; apt-get upgrade
-                        updatedb
-                        #apt-get install -y git
-                        cd /tmp
-                        wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/install_java.sh
-                        chmod u+x install_java.sh
-                        wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/bind_hadoop_directories.sh
-                        chmod u+x bind_hadoop_directories.sh
-                        wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/install_common.sh
-                        chmod u+x install_common.sh
-                        wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/configure_common.sh
-                        chmod u+x configure_common.sh
-                        wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/install_master_node.sh
-                        chmod u+x install_master_node.sh
-                        wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/configure_master.sh
-                        chmod u+x configure_master.sh
-                        export hadoop_base_domain=_base_domain_
-                        export hadoop_master_name=_hadoop_master_name_
-                        export hadoop_master_domain=_hadoop_master_name_._base_domain_
-                        export hadoop_master_ip=`wget -qO -  http://169.254.169.254/latest/meta-data/local-ipv4`
-                        export hadoop_master_hostname=`hostname`
-                        export hadoop_auxiliary_name=_hadoop_auxiliary_name_
-                        export hadoop_auxiliary_domain=_hadoop_auxiliary_name_._base_domain_
-                        export hadoop_slave_name=_hadoop_slave_name_
-                        ./install_common.sh
-                        ./install_master_node.sh
-                        ./configure_common.sh
-                        ./configure_master.sh
+#    HadoopMaster: 
+#        Type: "AWS::EC2::Instance"
+#        Properties: 
+#            KeyName: {Ref: KeyName}
+#            #ImageId: {Fn::FindInMap: [InstanceId, {Ref: ImageName}, ImageId]}
+#            ImageId:  {Ref: ImageId}
+#            InstanceType: {Ref: InstanceType}
+#            AvailabilityZone: {Ref: AvailabilityZone}
+#            SecurityGroups: 
+#                - {Ref: DefaultSecurityGroup}
+#                - {Ref: MemberSecurityGroup}
+#                - {Ref: ClusterSecurityGroup}
+#                - {Ref: WebManagementSecurityGroup}
+#            UserData:
+#                Fn::Base64:
+#                    Fn::Replace:
+#                      - _base_domain_: {Ref: BaseDomain}
+#                        _hadoop_master_name_: {Ref: MasterNodeName}
+#                        _hadoop_auxiliary_name_: {Ref: AuxiliaryNodeName}
+#                        _hadoop_slave_name_: {Ref: SlaveNodeName}
+#                      - |
+#                        #!/bin/bash -v
+#                        apt-get update; apt-get upgrade
+#                        updatedb
+#                        #apt-get install -y git
+#                        cd /tmp
+#                        wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/install_java.sh
+#                        chmod u+x install_java.sh
+#                        wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/bind_hadoop_directories.sh
+#                        chmod u+x bind_hadoop_directories.sh
+#                        wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/install_common.sh
+#                        chmod u+x install_common.sh
+#                        wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/configure_common.sh
+#                        chmod u+x configure_common.sh
+#                        wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/install_master_node.sh
+#                        chmod u+x install_master_node.sh
+#                        wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/configure_master.sh
+#                        chmod u+x configure_master.sh
+#                        export hadoop_base_domain=_base_domain_
+#                        export hadoop_master_name=_hadoop_master_name_
+#                        export hadoop_master_domain=_hadoop_master_name_._base_domain_
+#                        export hadoop_master_ip=`wget -qO -  http://169.254.169.254/latest/meta-data/local-ipv4`
+#                        export hadoop_master_hostname=`hostname`
+#                        export hadoop_auxiliary_name=_hadoop_auxiliary_name_
+#                        export hadoop_auxiliary_domain=_hadoop_auxiliary_name_._base_domain_
+#                        export hadoop_slave_name=_hadoop_slave_name_
+#                        ./install_common.sh
+#                        ./install_master_node.sh
+#                        ./configure_common.sh
+#                        ./configure_master.sh
     HadoopAuxiliary: 
         Type: "AWS::EC2::Instance"
         Properties: 
             KeyName: {Ref: KeyName}
-            ImageId: Fn::FindInMap: [InstanceId, {Ref: ImageName}, ImageId] 
+            #ImageId: {Fn::FindInMap: [InstanceId, {Ref: ImageName}, ImageId]}
+            ImageId:  {Ref: ImageId}
             InstanceType: {Ref: InstanceType}
             AvailabilityZone: {Ref: AvailabilityZone}
             SecurityGroups: 
@@ -160,6 +163,8 @@ Resources:
                       - _base_domain_: {Ref: BaseDomain}
                         _hadoop_master_name_: {Ref: MasterNodeName}
                         _hadoop_auxiliary_name_: {Ref: AuxiliaryNodeName}
+                        _instance_index_: {Ref: AuxiliaryNodeName}
+                        _installer_account_password_: "0^3Dfxx"
                       - |
                         #!/bin/bash -v
                         apt-get update; apt-get upgrade
@@ -175,6 +180,9 @@ Resources:
                         chmod u+x configure_common.sh
                         wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/install_auxiliary_node.sh
                         chmod u+x install_auxiliary_node.sh
+                        export installer_account_username="installer"
+                        export installer_account_password=_installer_account_password_
+                        export instance_index=_instance_index_
                         export hadoop_master_name=_hadoop_master_name_
                         export hadoop_master_domain=_hadoop_master_name_._base_domain_
                         export hadoop_master_ip=`wget -qO -  http://169.254.169.254/latest/meta-data/local-ipv4`
@@ -183,9 +191,20 @@ Resources:
                         export hadoop_auxiliary_domain=_hadoop_auxiliary_name_._base_domain_
                         ./install_common.sh
                         ./install_auxiliary_node.sh
-                        ./configure_common.sh
+                        #./configure_common.sh
 Outputs: 
-    InstanceIp: 
+#    MasterNodeIp: 
+#        Description: "Login via ssh using this command: "
+#        Value: 
+#            Fn::Join: 
+#                - ""
+#                - 
+#                    - "ssh -i /path/to/private/key/file.pem root@"
+#                    - 
+#                        Fn::GetAtt: 
+#                            - "HadoopMaster"
+#                            - "PublicIp"
+    AuxiliaryNodeIp: 
         Description: "Login via ssh using this command: "
         Value: 
             Fn::Join: 
@@ -194,9 +213,23 @@ Outputs:
                     - "ssh -i /path/to/private/key/file.pem root@"
                     - 
                         Fn::GetAtt: 
-                            - "HadoopMaster"
+                            - "HadoopAuxiliary"
                             - "PublicIp"
-    DynDNSMasterNodeDomainName: 
+#    DynDNSMasterNodeDomainName: 
+#        Description: "Enter this value for the domain name of the master node into the DynDNS account: "
+#        Value: 
+#            Fn::Join: 
+#                - ""
+#                - 
+#                    - {Ref: MasterNodeName}
+#                    - "."
+#                    - {Ref: BaseDomain}
+#                    - ": "
+#                    - 
+#                        Fn::GetAtt: 
+#                            - "HadoopMaster"
+#                            - "PublicIp"
+    DynDNSAuxilaryNodeDomainName: 
         Description: "Enter this value for the domain name of the master node into the DynDNS account: "
         Value: 
             Fn::Join: 
@@ -208,5 +241,5 @@ Outputs:
                     - ": "
                     - 
                         Fn::GetAtt: 
-                            - "HadoopMaster"
+                            - "HadoopAuxiliary"
                             - "PublicIp"

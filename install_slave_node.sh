@@ -13,4 +13,4 @@
 # Master: TaskTracker host and  DataNode host
 # Probably should have separate VM's for tasktracker and namenode.
 # Ignore "start failed: message.
-apt-get install hadoop-0.20-mapreduce-tasktracker hadoop-hdfs-datanode
+apt-get -y install hadoop-0.20-mapreduce-tasktracker hadoop-hdfs-datanode
