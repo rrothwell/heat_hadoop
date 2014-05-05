@@ -129,10 +129,16 @@ Resources:
 #                        chmod u+x install_common.sh
 #                        wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/configure_common.sh
 #                        chmod u+x configure_common.sh
+#                        wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/configure_hdfs.sh
+#                        chmod u+x configure_hdfs.sh
+#                        wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/configure_hdfs_master.sh
+#                        chmod u+x configure_hdfs_master.sh
 #                        wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/install_master_node.sh
 #                        chmod u+x install_master_node.sh
 #                        wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/configure_master.sh
 #                        chmod u+x configure_master.sh
+#                        wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/configure_MRv1.sh
+#                        chmod u+x configure_MRv1.sh
 #                        export hadoop_base_domain=_base_domain_
 #                        export hadoop_master_name=_hadoop_master_name_
 #                        export hadoop_master_domain=_hadoop_master_name_._base_domain_
@@ -144,7 +150,10 @@ Resources:
 #                        ./install_common.sh
 #                        ./install_master_node.sh
 #                        ./configure_common.sh
+#                        ./configure_hdfs.sh
+#                        ./configure_hdfs_master.sh
 #                        ./configure_master.sh
+#                        ./configure_MRv1.sh
     HadoopAuxiliary: 
         Type: "AWS::EC2::Instance"
         Properties: 
@@ -178,6 +187,8 @@ Resources:
                         chmod u+x install_common.sh
                         wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/configure_common.sh
                         chmod u+x configure_common.sh
+                        wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/configure_hdfs.sh
+                        chmod u+x configure_hdfs.sh
                         wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/install_auxiliary_node.sh
                         chmod u+x install_auxiliary_node.sh
                         export installer_account_username="installer"
@@ -191,7 +202,8 @@ Resources:
                         export hadoop_auxiliary_domain=_hadoop_auxiliary_name_._base_domain_
                         ./install_common.sh
                         ./install_auxiliary_node.sh
-                        #./configure_common.sh
+                        ./configure_common.sh
+                        ./configure_hdfs.sh
 Outputs: 
 #    MasterNodeIp: 
 #        Description: "Login via ssh using this command: "
@@ -230,12 +242,12 @@ Outputs:
 #                            - "HadoopMaster"
 #                            - "PublicIp"
     DynDNSAuxilaryNodeDomainName: 
-        Description: "Enter this value for the domain name of the master node into the DynDNS account: "
+        Description: "Enter this value for the domain name of the auxiliary node into the DynDNS account: "
         Value: 
             Fn::Join: 
                 - ""
                 - 
-                    - {Ref: MasterNodeName}
+                    - {Ref: AuxiliaryNodeName}
                     - "."
                     - {Ref: BaseDomain}
                     - ": "

@@ -5,8 +5,6 @@
 #
 # Installs the following config files:
 #	core-site.xml
-#	hdfs-site.xml
-#	mapred-site.xml
 # ===========================================
 
 # -------------------------------------------
@@ -22,7 +20,7 @@
 ./bind_hadoop_directories.sh
 
 # -------------------------------------------
-# Install HDFS
+# Install Core
 # -------------------------------------------
 
 # It looks like we can just set up the config files on the master
@@ -59,119 +57,8 @@ cat <<DELIMITER > /etc/hadoop/conf.unicarbkb/core-site.xml
 </configuration>
 DELIMITER
 
-# Edit hdfs-site.xml on master, slave 1, slave 2, slave 3 etc..
-# I dont know what the significance of having an nfs mount is at this stage.
-# Don't have an nfs mount so will create a proxy for it at /mnt/storage/nfs/nn
-# May need to change file paths to URI's file:///
-# Suspect that the use of multiple mount points (/data/1/dfs/dn /data/2/dfs/dn /data/3/dfs/dn /data/4/dfs/dn)
-# doesn't make much sense when we have access to just one large (ephemeral) volume per OpenStack VM.
-
-cat <<DELIMITER > /etc/hadoop/conf.unicarbkb/hdfs-site.xml
-<?xml version="1.0"?>
-<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
-<configuration>
-    <property>
-        <name>dfs.name.dir</name>
-        <value>/var/lib/hadoop-hdfs/cache/hdfs/dfs/name</value>
-    </property>
-    <property>
-        <name>dfs.permissions.superusergroup</name>
-        <value>hadoop</value>
-    </property>
-    <property>
-        <name>dfs.namenode.name.dir</name>
-        <value>file:///data/1/dfs/nn,file:///nfsmount/dfs/nn</value>
-    </property>
-    <property>
-        <name>dfs.datanode.data.dir</name>
-        <value>file:///data/1/dfs/dn,file:///data/2/dfs/dn,file:///data/3/dfs/dn,file:///data/4/dfs/dn</value>
-    </property>
-    <property>
-        <name>dfs.datanode.failed.volumes.tolerated</name>
-        <value>3</value>
-    </property>
-    <!-- Begin secondarynamenode config - needs this to find the primary namenode. -->
-    <property>
-        <name>dfs.namenode.http-address</name>
-        <value>$hadoop_master_domain:50070</value>
-        <description>The address and the base port on which the dfs NameNode Web UI will listen.
-        </description>
-    </property>
-    <!-- End secondarynamenode config. -->
-    <!-- Begin WebHDFS config. -->
-    <property>
-        <name>dfs.webhdfs.enabled</name>
-        <value>true</value>
-    </property>
-    <property>
-        <name>dfs.web.authentication.kerberos.principal</name>
-        <value>HTTP/_HOST@$hadoop_master_domain</value>
-    </property>
-    <property>
-        <name>dfs.web.authentication.kerberos.keytab</name>
-        <value>/etc/hadoop/conf/HTTP.keytab</value> <!-- path to the HTTP keytab -->
-    </property>
-    <!-- End WebHDFS config. -->
-</configuration>
-DELIMITER
-
 # The list of secondarynamenodes.
 cat <<DELIMITER > /etc/hadoop/conf.unicarbkb/masters
 $hadoop_auxiliary_domain
 DELIMITER
 
-# Create the directories and set the permissions
-# Do on all cluster members.
-mkdir -p /data/1/dfs/nn /nfsmount/dfs/nn
-mkdir -p /data/1/dfs/dn /data/2/dfs/dn /data/3/dfs/dn /data/4/dfs/dn
-chown -R hdfs:hdfs /data/1/dfs/nn /nfsmount/dfs/nn /data/1/dfs/dn /data/2/dfs/dn /data/3/dfs/dn /data/4/dfs/dn
-chmod go-rx /data/1/dfs/nn /nfsmount/dfs/nn
-
-# Format the hdfs file system as the hdfs user.
-# ON the master only is OK.
-sudo -u hdfs hadoop namenode -format
-
-# -------------------------------------------
-# Deploy MRv1: MapReduce version 1
-# -------------------------------------------
-
-# Edit mapred-site.xml
-cat <<DELIMITER > /etc/hadoop/conf.unicarbkb/mapred-site.xml
-<?xml version="1.0"?>
-<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
-<configuration>
-    <property>
-        <name>mapred.job.tracker</name>
-        <value>$hadoop_master_domain:8021</value>
-    </property>
-    <property>
-        <name>mapred.local.dir</name>
-        <value>/data/1/mapred/local,/data/2/mapred/local,/data/3/mapred/local,/data/4/mapred/local</value>
-    </property>
-    <!-- Begin Health Checker - health check script runs on slaves/datanodes. -->
-    <property>
-        <name>mapred.healthChecker.script.path</name>
-        <value>/etc/hadoop/conf.unicarbkb/health_check.sh</value>
-    </property>
-    <property>
-        <name>mapred.healthChecker.interval</name>
-        <value>5000</value>
-    </property>
-    <property>
-        <name>mapred.healthChecker.script.timeout</name>
-        <value>50000</value>
-    </property>
-    <property>
-        <name>mapred.healthChecker.script.args</name>
-        <value></value>
-    </property>
-    <!-- End Health Checker. -->
-</configuration>
-DELIMITER
-
-
-# Create the directories and set the permissions.
-# Do this on all cluster machines. Otherwise tasktracker can't start up.
-# Maybe move this to bind_hadoop_directories.sh
-mkdir -p /data/1/mapred/local /data/2/mapred/local /data/3/mapred/local /data/4/mapred/local
-chown -R mapred:hadoop /data/1/mapred/local /data/2/mapred/local /data/3/mapred/local /data/4/mapred/local
