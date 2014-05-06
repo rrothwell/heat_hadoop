@@ -123,7 +123,8 @@ Resources:
             UserData:
                 Fn::Base64:
                     Fn::Replace:
-                      - _base_domain_: {Ref: BaseDomain}
+                      - _project_name_: {Ref: ProjectName}
+                        _base_domain_: {Ref: BaseDomain}
                         _hadoop_master_name_: {Ref: MasterNodeName}
                         _hadoop_slave_name_: {Ref: SlaveNodeName}
                         _installer_account_password_: {Ref: TemporaryInstallerPassword}
@@ -148,6 +149,7 @@ Resources:
                         chmod u+x configure_slave.sh
                         wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/configure_MRv1.sh
                         chmod u+x configure_MRv1.sh
+                        export project_name=_project_name_
                         export installer_account_username="installer"
                         export installer_account_password=_installer_account_password_
                         export hadoop_master_name=_hadoop_master_name_
@@ -180,7 +182,8 @@ Resources:
             UserData:
                 Fn::Base64:
                     Fn::Replace:
-                      - _base_domain_: {Ref: BaseDomain}
+                      - _project_name_: {Ref: ProjectName}
+                        _base_domain_: {Ref: BaseDomain}
                         _hadoop_master_name_: {Ref: MasterNodeName}
                         _hadoop_auxiliary_name_: {Ref: AuxiliaryNodeName}
                         _installer_account_password_: {Ref: TemporaryInstallerPassword}
@@ -201,6 +204,7 @@ Resources:
                         chmod u+x configure_hdfs.sh
                         wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/install_auxiliary_node.sh
                         chmod u+x install_auxiliary_node.sh
+                        export project_name=_project_name_
                         export installer_account_username="installer"
                         export installer_account_password=_installer_account_password_
                         export hadoop_master_name=_hadoop_master_name_
@@ -234,7 +238,8 @@ Resources:
             UserData:
                 Fn::Base64:
                     Fn::Replace:
-                      - _base_domain_: {Ref: BaseDomain}
+                      - _project_name_: {Ref: ProjectName}
+                        _base_domain_: {Ref: BaseDomain}
                         _hadoop_master_name_: {Ref: MasterNodeName}
                         _hadoop_auxiliary_name_: {Ref: AuxiliaryNodeName}
                         _hadoop_slave_name_: {Ref: SlaveNodeName}
@@ -266,6 +271,7 @@ Resources:
                         chmod u+x configure_master.sh
                         wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/configure_MRv1.sh
                         chmod u+x configure_MRv1.sh
+                        export project_name=_project_name_
                         export installer_account_username="installer"
                         export installer_account_password=_installer_account_password_
                         export hadoop_base_domain=_base_domain_

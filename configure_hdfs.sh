@@ -18,7 +18,7 @@
 # Suspect that the use of multiple mount points (/data/1/dfs/dn /data/2/dfs/dn /data/3/dfs/dn /data/4/dfs/dn)
 # doesn't make much sense when we have access to just one large (ephemeral) volume per OpenStack VM.
 
-cat <<DELIMITER > /etc/hadoop/conf.unicarbkb/hdfs-site.xml
+cat <<DELIMITER > /etc/hadoop/conf.$project_name/hdfs-site.xml
 <?xml version="1.0"?>
 <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
 <configuration>

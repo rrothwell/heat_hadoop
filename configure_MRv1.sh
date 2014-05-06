@@ -10,7 +10,7 @@
 # -------------------------------------------
 
 # Edit mapred-site.xml
-cat <<DELIMITER > /etc/hadoop/conf.unicarbkb/mapred-site.xml
+cat <<DELIMITER > /etc/hadoop/conf.$project_name/mapred-site.xml
 <?xml version="1.0"?>
 <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
 <configuration>
@@ -25,7 +25,7 @@ cat <<DELIMITER > /etc/hadoop/conf.unicarbkb/mapred-site.xml
     <!-- Begin Health Checker - health check script runs on slaves/datanodes. -->
     <property>
         <name>mapred.healthChecker.script.path</name>
-        <value>/etc/hadoop/conf.unicarbkb/health_check.sh</value>
+        <value>/etc/hadoop/conf.$project_name/health_check.sh</value>
     </property>
     <property>
         <name>mapred.healthChecker.interval</name>

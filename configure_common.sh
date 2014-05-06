@@ -28,15 +28,15 @@
 # Not sure how far to go with this; does it include the secondary namenode as well?
 
 # Now configure our cluster. On all machines in cluster.
-cp -r /etc/hadoop/conf.empty /etc/hadoop/conf.unicarbkb
-update-alternatives --install /etc/hadoop/conf hadoop-conf /etc/hadoop/conf.unicarbkb 50
-update-alternatives --set hadoop-conf /etc/hadoop/conf.unicarbkb
+cp -r /etc/hadoop/conf.empty /etc/hadoop/conf.$project_name
+update-alternatives --install /etc/hadoop/conf hadoop-conf /etc/hadoop/conf.$project_name 50
+update-alternatives --set hadoop-conf /etc/hadoop/conf.$project_name
 
 # # Edit core-site.xml on master, slave 1, slave 2, slave 3 etc..
 # Its easier to edit everything on the master and when finished 
 # copy the entire config directory to the other cluster members.
 
-cat <<DELIMITER > /etc/hadoop/conf.unicarbkb/core-site.xml
+cat <<DELIMITER > /etc/hadoop/conf.$project_name/core-site.xml
 <?xml version="1.0"?>
 <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
 <configuration>
@@ -58,7 +58,7 @@ cat <<DELIMITER > /etc/hadoop/conf.unicarbkb/core-site.xml
 DELIMITER
 
 # The list of secondarynamenodes.
-cat <<DELIMITER > /etc/hadoop/conf.unicarbkb/masters
+cat <<DELIMITER > /etc/hadoop/conf.$project_name/masters
 $hadoop_auxiliary_domain
 DELIMITER
 
