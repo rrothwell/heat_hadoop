@@ -1,6 +1,10 @@
 HeatTemplateFormatVersion: '2012-12-12'
 Description: "An Hadoop Cluster. "
 Parameters: 
+    ProjectName: 
+        Description: "The name of the Hadoop project. Used to name the configuration directory"
+        Type: "String"
+        Default: "unicarbkb"
     TemporaryInstallerPassword: 
         Description: "A password used used to finalised configuration across cluster members. "
         Type: "String"
@@ -269,8 +273,8 @@ Resources:
                         export hadoop_master_domain=_hadoop_master_name_._base_domain_
                         export hadoop_instance_ip=`wget -qO -  http://169.254.169.254/latest/meta-data/local-ipv4`
                         export hadoop_instance_hostname=`hostname`
-                        export hadoop_instance_name=_hadoop_slave_name_
-                        export hadoop_instance_domain=_hadoop_slave_name_._base_domain_
+                        export hadoop_instance_name=_hadoop_master_name_
+                        export hadoop_instance_domain=_hadoop_master_name_._base_domain_
                         export hadoop_slave_name=_hadoop_slave_name_
                         export hadoop_slave_list=_hadoop_slave_list_
                         export hadoop_auxiliary_domain=_hadoop_auxiliary_name_._base_domain_

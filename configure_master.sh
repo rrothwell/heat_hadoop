@@ -18,7 +18,7 @@ for slave in $hadoop_slave_list; do
 done
 
 
-echo <<DELIMITER > /etc/zookeeper/conf.dist/zoo.cfg
+cat <<DELIMITER > /etc/zookeeper/conf.dist/zoo.cfg
 maxClientCnxns=50
 # The number of milliseconds of each tick
 tickTime=2000
