@@ -50,7 +50,7 @@ Parameters:
         Description: "The base VM image used to build the cluster. "
         Type: String
         # Customised Ubuntu 12.04 image on NeCTAR
-        # Snapshot called heat_hadoop_seed_29Apr2014.
+        # Snapshot called java_seed_08May2014.
         # Made by running sudo apt-get install python-setuptools
         # Add more image options later.
         Default: c64cacf2-c269-4a95-aae6-7f1a3913f9eb
@@ -118,73 +118,73 @@ Resources:
                 - {IpProtocol: tcp, FromPort: '50075', ToPort: '50075', CidrIp: 0.0.0.0/0}
                 - {IpProtocol: tcp, FromPort: '50090', ToPort: '50090', CidrIp: 0.0.0.0/0}
                 - {IpProtocol: tcp, FromPort: '60010', ToPort: '60010', CidrIp: 0.0.0.0/0}
-#    HadoopSlaveGroup:
-#        Type: "OS::Heat::InstanceGroup"
-#        Properties:
-#            # Availability zones here are both required and yet resolutely ignored.
-#            AvailabilityZones: [Ref: "AvailabilityZone"] # Fn::GetAZs: ""
-#            LaunchConfigurationName: {Ref: "HadoopSlaveConfig"}
-#            Size: {Ref: SlaveCount}
-#    HadoopSlaveConfig: 
-#        Type: "AWS::AutoScaling::LaunchConfiguration"
-#        Properties: 
-#            KeyName: {Ref: KeyName}
-#            #ImageId: {Fn::FindInMap: [InstanceId, {Ref: ImageName}, ImageId]}
-#            ImageId:  {Ref: ImageId}
-#            InstanceType: {Ref: InstanceType}
-#            #AvailabilityZones: {Ref: AvailabilityZone}
-#            SecurityGroups: 
-#                - {Ref: DefaultSecurityGroup}
-#                - {Ref: MemberSecurityGroup}
-#                - {Ref: ClusterSecurityGroup}
-#            UserData:
-#                Fn::Base64:
-#                    Fn::Replace:
-#                      - _project_name_: {Ref: ProjectName}
-#                        _base_domain_: {Ref: BaseDomain}
-#                        _hadoop_master_name_: {Ref: MasterNodeName}
-#                        _hadoop_slave_name_: {Ref: SlaveNodeName}
-#                        _installer_account_password_: {Ref: TemporaryInstallerPassword}
-#                      - |
-#                        #!/bin/bash -v
-#                        apt-get update; apt-get upgrade
-#                        updatedb
-#                        cd /tmp
-#                        wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/install_java.sh
-#                        chmod u+x install_java.sh
-#                        wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/bind_hadoop_directories.sh
-#                        chmod u+x bind_hadoop_directories.sh
-#                        wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/install_common.sh
-#                        chmod u+x install_common.sh
-#                        wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/configure_common.sh
-#                        chmod u+x configure_common.sh
-#                        wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/configure_hdfs.sh
-#                        chmod u+x configure_hdfs.sh
-#                        wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/install_slave_node.sh
-#                        chmod u+x install_slave_node.sh
-#                        wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/configure_slave.sh
-#                        chmod u+x configure_slave.sh
-#                        wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/configure_MRv1.sh
-#                        chmod u+x configure_MRv1.sh
-#                        export project_name=_project_name_
-#                        export installer_account_username="installer"
-#                        export installer_account_password=_installer_account_password_
-#                        export hadoop_master_name=_hadoop_master_name_
-#                        export hadoop_master_domain=_hadoop_master_name_._base_domain_
-#                        export hadoop_instance_ip=`wget -qO -  http://169.254.169.254/latest/meta-data/local-ipv4`
-#                        export hadoop_instance_hostname=`hostname`
-#                        export hadoop_instance_name=_hadoop_slave_name_
-#                        export hadoop_instance_domain=_hadoop_slave_name_._base_domain_
-#                        ./install_common.sh
-#                        ./install_slave_node.sh
-#                        ./configure_common.sh
-#                        ./configure_hdfs.sh
-#                        ./configure_slave.sh
-#                        ./configure_MRv1.sh
-#                        useradd -m -s /bin/bash $installer_account_username
-#                        echo $installer_account_username:$installer_account_password | chpasswd
-#                        # Find this in /tmp
-#                        touch "installation_finished"
+    HadoopSlaveGroup:
+        Type: "OS::Heat::InstanceGroup"
+        Properties:
+            # Availability zones here are both required and yet resolutely ignored.
+            AvailabilityZones: [Ref: "AvailabilityZone"] # Fn::GetAZs: ""
+            LaunchConfigurationName: {Ref: "HadoopSlaveConfig"}
+            Size: {Ref: SlaveCount}
+    HadoopSlaveConfig: 
+        Type: "AWS::AutoScaling::LaunchConfiguration"
+        Properties: 
+            KeyName: {Ref: KeyName}
+            #ImageId: {Fn::FindInMap: [InstanceId, {Ref: ImageName}, ImageId]}
+            ImageId:  {Ref: ImageId}
+            InstanceType: {Ref: InstanceType}
+            #AvailabilityZones: {Ref: AvailabilityZone}
+            SecurityGroups: 
+                - {Ref: DefaultSecurityGroup}
+                - {Ref: MemberSecurityGroup}
+                - {Ref: ClusterSecurityGroup}
+            UserData:
+                Fn::Base64:
+                    Fn::Replace:
+                      - _project_name_: {Ref: ProjectName}
+                        _base_domain_: {Ref: BaseDomain}
+                        _hadoop_master_name_: {Ref: MasterNodeName}
+                        _hadoop_slave_name_: {Ref: SlaveNodeName}
+                        _installer_account_password_: {Ref: TemporaryInstallerPassword}
+                      - |
+                        #!/bin/bash -v
+                        apt-get update; apt-get upgrade
+                        updatedb
+                        cd /tmp
+                        wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/install_java.sh
+                        chmod u+x install_java.sh
+                        wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/bind_hadoop_directories.sh
+                        chmod u+x bind_hadoop_directories.sh
+                        wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/install_common.sh
+                        chmod u+x install_common.sh
+                        wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/configure_common.sh
+                        chmod u+x configure_common.sh
+                        wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/configure_hdfs.sh
+                        chmod u+x configure_hdfs.sh
+                        wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/install_slave_node.sh
+                        chmod u+x install_slave_node.sh
+                        wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/configure_slave.sh
+                        chmod u+x configure_slave.sh
+                        wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/configure_MRv1.sh
+                        chmod u+x configure_MRv1.sh
+                        export project_name=_project_name_
+                        export installer_account_username="installer"
+                        export installer_account_password=_installer_account_password_
+                        export hadoop_master_name=_hadoop_master_name_
+                        export hadoop_master_domain=_hadoop_master_name_._base_domain_
+                        export hadoop_instance_ip=`wget -qO -  http://169.254.169.254/latest/meta-data/local-ipv4`
+                        export hadoop_instance_hostname=`hostname`
+                        export hadoop_instance_name=_hadoop_slave_name_
+                        export hadoop_instance_domain=_hadoop_slave_name_._base_domain_
+                        ./install_common.sh
+                        ./install_slave_node.sh
+                        ./configure_common.sh
+                        ./configure_hdfs.sh
+                        ./configure_slave.sh
+                        ./configure_MRv1.sh
+                        useradd -m -s /bin/bash $installer_account_username
+                        echo $installer_account_username:$installer_account_password | chpasswd
+                        # Find this in /tmp
+                        touch "installation_finished"
     HadoopAuxiliary: 
         Type: "AWS::EC2::Instance"
         Properties: 
@@ -265,15 +265,15 @@ Resources:
                             Fn::GetAtt: 
                                 - "HadoopAuxiliary"
                                 - "PublicIp"
-#                        _hadoop_slave_name_: {Ref: SlaveNodeName}
-#                        _hadoop_slave_list_:
-#                             Fn::GetAtt: 
-#                                - "HadoopSlaveGroup"
-#                                - "InstanceList"
-#                        _hadoop_slave_count_:
-#                            Fn::GetAtt: 
-#                                - "HadoopSlaveGroup"
-#                                - "Size"
+                        _hadoop_slave_name_: {Ref: SlaveNodeName}
+                        _hadoop_slave_list_:
+                             Fn::GetAtt: 
+                                - "HadoopSlaveGroup"
+                                - "InstanceList"
+                        _hadoop_slave_count_:
+                            Fn::GetAtt: 
+                                - "HadoopSlaveGroup"
+                                - "Size"
                         _installer_account_password_: {Ref: TemporaryInstallerPassword}
                       - |
                         #!/bin/bash -v
@@ -313,9 +313,9 @@ Resources:
                         export hadoop_instance_hostname=`hostname`
                         export hadoop_instance_name=_hadoop_master_name_
                         export hadoop_instance_domain=_hadoop_master_name_._base_domain_
-                        # export hadoop_slave_name=_hadoop_slave_name_
-                        #  export hadoop_slave_list=_hadoop_slave_list_
-                        # export hadoop_slave_count=_hadoop_slave_count_
+                        export hadoop_slave_name=_hadoop_slave_name_
+                        export hadoop_slave_list=_hadoop_slave_list_
+                        export hadoop_slave_count=_hadoop_slave_count_
                         export hadoop_auxiliary_domain=_hadoop_auxiliary_name_._base_domain_
                         export hadoop_auxiliary_ip=_hadoop_auxiliary_ip_
                         ./install_common.sh

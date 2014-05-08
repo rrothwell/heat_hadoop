@@ -20,7 +20,7 @@
 # Adjust configuration of remote VM's and then starts the Hadoop services
 # ===========================================
 
-#expected_vm_count=2
+#expected_vm_count=1
 set expected_vm_count=1+hadoop_slave_count
 #hadoop_auxiliary_ip=130.56.249.85
 slave_node_ip=130.220.208.87

@@ -97,21 +97,9 @@ Resources:
                         apt-get update; apt-get upgrade
                         updatedb
                         cd /tmp
-                        wget https://raw.githubusercontent.com/rrothwell/heat_research/master/install_java.sh
+                        wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/install_java.sh
                         chmod u+x install_java.sh
-                        wget https://raw.githubusercontent.com/rrothwell/heat_research/master/install_java_server.sh
-                        chmod u+x install_java_server.sh
-                        export project_name=_project_name_
-                        export research_base_domain=_base_domain_
-                        export research_master_name=_research_master_name_
-                        export research_master_domain=_research_master_name_._base_domain_
-                        export research_instance_ip=`wget -qO -  http://169.254.169.254/latest/meta-data/local-ipv4`
-                        export research_instance_hostname=`hostname`
-                        export research_instance_name=_research_master_name_
-                        export research_instance_domain=_research_master_name_._base_domain_
-                        ./install_java_server.sh
-                        # Find this flag file in /tmp
-                        touch "installation_finished" 
+                        ./install_java.sh
 # TODO Add scripts to install Tomcat.                                               
 Outputs: 
     ServerNodeIp: 
