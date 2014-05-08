@@ -3,32 +3,39 @@
 # Finalise installation
 # Based on Cloudera Hadoop version 4
 #
-# Adjust configuration of remote VM's and then starts the services
+# Adjust configuration of remote VM's and then starts the Hadoop services
 # ===========================================
 
-remote_password="0^3Dfxx"
-expected_vm_count=2
-auxilary_node_ip=130.56.249.85
+#expected_vm_count=2
+set expected_vm_count=1+hadoop_slave_count
+#hadoop_auxiliary_ip=130.56.249.85
 slave_node_ip=130.220.208.87
+
+# Setup for timeout.
 
 current_time_secs=`date +%s`
 # 5min as seconds
 let duration_secs=1*60	
 let timeout_secs=current_time_secs+duration_secs
 
+# Loop for timeout.
+# The loop checks each of the remote VM's for the existence of a file at /tmp/installation_finished.
+# This file is created as the final step of the installation code on each VM.
+# If a full complement of VM's is ready the setup process can be finalised.
+
 counter=0
 while [  $current_time_secs -lt $timeout_secs ]; do
 
 	vm_count=0
 	
-	message="Installation on $auxilary_node_ip NOT finished." 
-	if sshpass -p $remote_password scp -o StrictHostKeyChecking=no installer@$auxilary_node_ip:/tmp/installation_finished ./ >&/dev/null ; then
+	message="Installation on $hadoop_auxiliary_ip NOT finished." 
+	if sshpass -p $installer_account_password scp -o StrictHostKeyChecking=no installer@$hadoop_auxiliary_ip:/tmp/installation_finished ./ >&/dev/null ; then
 		let vm_count=vm_count+1 
-		message="Installation on $auxilary_node_ip finished." ;
+		message="Installation on $hadoop_auxiliary_ip finished." ;
 		echo $message
 	fi
 	message="Installation on $slave_node_ip NOT finished." 
-	if sshpass -p $remote_password scp -o StrictHostKeyChecking=no installer@$slave_node_ip:/tmp/installation_finished ./ >&/dev/null ; then
+	if sshpass -p $installer_account_password scp -o StrictHostKeyChecking=no installer@$slave_node_ip:/tmp/installation_finished ./ >&/dev/null ; then
 		let vm_count=vm_count+1 
 		message="Installation on $slave_node_ip finished." ;
 		echo $message
@@ -41,14 +48,19 @@ while [  $current_time_secs -lt $timeout_secs ]; do
 	current_time_secs=`date +%s`
 done
 
+# Verify that timeout did not trigger. If it did we give up.
+
 if [  $vm_count -eq $expected_vm_count ]; then
-	echo "All VMs now read to be finalised. "
+	echo "All VMs now ready to be finalised. "
 else
 	echo "All VMs not ready within time limit. "
+	# Giveup.
 	break
 fi
 
-sshpass -p $remote_password ssh installer@$auxilary_node_ip 'bash -s' < finalise_auxiliary.sh
+# All VM's are good, so complete the installation
+
+sshpass -p $installer_account_password ssh installer@$hadoop_auxiliary_ip 'bash -s' < finalise_auxiliary.sh
 
 
 
