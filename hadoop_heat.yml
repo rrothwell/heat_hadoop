@@ -31,8 +31,8 @@ Parameters:
         Type: "String"
         Default: "richardr_on_nectar"
     SlaveCount:
-        Type: "Number"
-        Default: "1"
+        Type: "String"
+        Default: "2"
         MinValue: "1"
         MaxValue: "100"
         Description: "The number of instances to create"
@@ -239,8 +239,8 @@ Resources:
                         echo $installer_account_username:$installer_account_password | chpasswd
                         # Find this in /tmp
                         touch "installation_finished"
-    # http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::EC2::Instance
-    # To get the node IP address see: https://wiki.openstack.org/wiki/Heat/ApplicationDeployment
+# http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::EC2::Instance
+# To get the node IP address see: https://wiki.openstack.org/wiki/Heat/ApplicationDeployment
     HadoopMaster: 
         Type: "AWS::EC2::Instance"
         Properties: 
@@ -267,14 +267,10 @@ Resources:
                                 - "PublicIp"
                         _hadoop_slave_name_: {Ref: SlaveNodeName}
                         _hadoop_slave_list_:
-                             Fn::GetAtt: 
-                                - "HadoopSlaveGroup"
-                                - "InstanceList"
-                        _hadoop_slave_count_:
                             Fn::GetAtt: 
                                 - "HadoopSlaveGroup"
-                                - "Size"
-                        _installer_account_password_: {Ref: TemporaryInstallerPassword}
+                                - "InstanceList"
+                        _hadoop_slave_count_: {Ref: SlaveCount}
                       - |
                         #!/bin/bash -v
                         apt-get update; apt-get upgrade
@@ -324,37 +320,34 @@ Resources:
                         ./configure_hdfs.sh
                         ./configure_master.sh
                         ./configure_MRv1.sh
-                        useradd -m -s /bin/bash $installer_account_username
-                        echo $installer_account_username:$installer_account_password | chpasswd                       
                         ./finalise_hadoop_installation.sh
                         ./configure_hdfs_master.sh
                         # Find this in /tmp
                         touch "installation_finished" 
-                                               
-Outputs: 
-    MasterNodeIp: 
-        Description: "Login via ssh using this command: "
-        Value: 
-            Fn::Join: 
-                - ""
-                - 
-                    - "ssh -i /path/to/private/key/file.pem root@"
-                    - 
-                        Fn::GetAtt: 
-                            - "HadoopMaster"
-                            - "PublicIp"
-    AuxiliaryNodeIp: 
-        Description: "Login via ssh using this command: "
-        Value: 
-            Fn::Join: 
-                - ""
-                - 
-                    - "ssh -i /path/to/private/key/file.pem root@"
-                    - 
-                        Fn::GetAtt: 
-                            - "HadoopAuxiliary"
-                            - "PublicIp"
-##    DynDNSMasterNodeDomainName: 
+#Outputs: 
+#    MasterNodeIp: 
+#        Description: "Login via ssh using this command: "
+#        Value: 
+#            Fn::Join: 
+#                - ""
+#                - 
+#                    - "ssh -i /path/to/private/key/file.pem root@"
+#                    - 
+#                        Fn::GetAtt: 
+#                            - "HadoopMaster"
+#                            - "PublicIp"
+#    AuxiliaryNodeIp: 
+#        Description: "Login via ssh using this command: "
+#        Value: 
+#            Fn::Join: 
+#                - ""
+#                - 
+#                    - "ssh -i /path/to/private/key/file.pem root@"
+#                    - 
+#                        Fn::GetAtt: 
+#                            - "HadoopAuxiliary"
+#                            - "PublicIp"
+###    DynDNSMasterNodeDomainName: 
 #        Description: "Enter this value for the domain name of the master node into the DynDNS account: "
 #        Value: 
 #            Fn::Join: 
