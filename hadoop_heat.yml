@@ -107,7 +107,7 @@ Resources:
             # Availability zones here are both required and yet resolutely ignored.
             AvailabilityZones: [Ref: "AvailabilityZone"] # Fn::GetAZs: ""
             LaunchConfigurationName: {Ref: "HadoopSlaveConfig"}
-            Size: {Ref: "SlaveCount"}
+            Size: {Ref: SlaveCount}
     HadoopSlaveConfig: 
         Type: "AWS::AutoScaling::LaunchConfiguration"
         Properties: 
@@ -251,9 +251,13 @@ Resources:
                         _hadoop_slave_name_: {Ref: SlaveNodeName}
                         _hadoop_slave_list_:
                              Fn::GetAtt: 
-                            - "HadoopSlaveGroup"
-                            - "InstanceList"
-                       _hadoop_slave_count_: {Ref: "SlaveCount"}
+                                - "HadoopSlaveGroup"
+                                - "InstanceList"
+                        _hadoop_slave_count_:
+                            Fn::GetAtt: 
+                                - "HadoopSlaveGroup"
+                                - "Size"
+                        _installer_account_password_: {Ref: TemporaryInstallerPassword}
                       - |
                         #!/bin/bash -v
                         apt-get update; apt-get upgrade
@@ -306,7 +310,7 @@ Resources:
                         ./configure_MRv1.sh
                         useradd -m -s /bin/bash $installer_account_username
                         echo $installer_account_username:$installer_account_password | chpasswd                       
-                        ./finalise_hadoop_installation.sh
+                        #./finalise_hadoop_installation.sh
                         # Find this in /tmp
                         touch "installation_finished" 
                                                
