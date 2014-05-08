@@ -322,8 +322,6 @@ Resources:
                         ./configure_MRv1.sh
                         ./finalise_hadoop_installation.sh
                         ./configure_hdfs_master.sh
-                        # Find this in /tmp
-                        touch "installation_finished" 
 #Outputs: 
 #    MasterNodeIp: 
 #        Description: "Login via ssh using this command: "
