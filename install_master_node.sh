@@ -17,3 +17,4 @@
 # exceeds a few 10's of nodes.
 # Ignore "start failed: message.
 apt-get -y install hadoop-0.20-mapreduce-jobtracker hadoop-hdfs-namenode hadoop-client
+apt-get -y install sshpass
