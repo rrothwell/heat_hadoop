@@ -23,7 +23,7 @@
 #	NameNode
 # ===========================================
 
-echo -n "Slaves: $hadoop_slave_list"
+echo "Slaves: $hadoop_slave_list"
 
 echo -n "" > slaves
 COUNTER=1

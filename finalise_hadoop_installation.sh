@@ -24,7 +24,7 @@
 user=$installer_account_username
 password=$installer_account_password
 
-set expected_vm_count=1+$((hadoop_slave_count))
+let expected_vm_count=hadoop_slave_count+1
 echo "Expected VM count: $expected_vm_count"
 
 # Setup for timeout.
@@ -45,7 +45,7 @@ while [  $current_time_secs -lt $timeout_secs ]; do
 	vm_count=0
 	
 	message="Installation on auxiliary $hadoop_auxiliary_ip NOT finished." 
-	if sshpass -p $password scp -o StrictHostKeyChecking=no $user@$hadoop_auxiliary_ip:/tmp/installation_finished ./ >&/dev/null ; then
+	if sshpass -p $password scp -o StrictHostKeyChecking=no $user\@$hadoop_auxiliary_ip:/tmp/installation_finished ./ >&/dev/null ; then
 		let vm_count=vm_count+1 
 		message="Installation auxiliary on $hadoop_auxiliary_ip finished." ;
 	fi
@@ -55,7 +55,7 @@ while [  $current_time_secs -lt $timeout_secs ]; do
 	IFS=","
 	for slave_node_ip in $hadoop_slave_list; do
 		message="Installation on slave $slave_counter with IP address $slave_node_ip NOT finished." 
-		if sshpass -p $password scp -o StrictHostKeyChecking=no $user@$slave_node_ip:/tmp/installation_finished ./ >&/dev/null ; then
+		if sshpass -p $password scp -o StrictHostKeyChecking=no $user\@$slave_node_ip:/tmp/installation_finished ./ >&/dev/null ; then
 			let vm_count=vm_count+1 
 			message="Installation on slave $slave_counter with IP address $slave_node_ip is finished." ;
 		fi
@@ -63,7 +63,7 @@ while [  $current_time_secs -lt $timeout_secs ]; do
 		let slave_counter=slave_counter+1
 	done
 
-	if [  $vm_count -eq $expected_vm_count ]; then
+	if [  "$vm_count" -eq "$expected_vm_count" ]; then
 		break 
 	fi
 	echo "The try count is $try_counter"
@@ -73,7 +73,7 @@ done
 
 # Verify that timeout did not trigger. If it did we give up.
 
-if [  $vm_count -eq $expected_vm_count ]; then
+if [  "$vm_count" -eq "$expected_vm_count" ]; then
 	echo "All VMs now ready to be finalised. "
 else
 	echo "All VMs not ready within time limit. "
@@ -83,7 +83,7 @@ fi
 
 # All VM's are good, so complete the installation
 
-sshpass -p $installer_account_password ssh installer@$hadoop_auxiliary_ip 'bash -s' < finalise_auxiliary.sh
+sshpass -p $installer_account_password ssh installer\@$hadoop_auxiliary_ip 'bash -s' < finalise_auxiliary.sh
 
 exit 0
 
