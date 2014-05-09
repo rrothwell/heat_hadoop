@@ -31,7 +31,7 @@ echo "Expected VM count: $expected_vm_count"
 
 current_time_secs=`date +%s`
 # 5min as seconds
-let duration_secs=1*60	
+let duration_secs=5*60	
 let timeout_secs=current_time_secs+duration_secs
 
 # Loop for timeout.
@@ -51,23 +51,23 @@ while [  $current_time_secs -lt $timeout_secs ]; do
 	fi
 	echo $message
 	
-	slave_counter=1
+	slave_index=0
 	IFS=","
 	for slave_node_ip in $hadoop_slave_list; do
-		message="Installation on slave $slave_counter with IP address $slave_node_ip NOT finished." 
+		message="Installation on slave $slave_index with IP address $slave_node_ip NOT finished." 
 		if sshpass -p $password scp -o StrictHostKeyChecking=no $user\@$slave_node_ip:/tmp/installation_finished ./ >&/dev/null ; then
 			let vm_count=vm_count+1 
-			message="Installation on slave $slave_counter with IP address $slave_node_ip is finished." ;
+			message="Installation on slave $slave_index with IP address $slave_node_ip is finished." ;
 		fi
 		echo $message
-		let slave_counter=slave_counter+1
+		let slave_index=slave_index+1
 	done
 
 	if [  "$vm_count" -eq "$expected_vm_count" ]; then
 		break 
 	fi
-	echo "The try count is $try_counter"
 	let try_counter=try_counter+1 
+	echo "The try count is $try_counter"
 	current_time_secs=`date +%s`
 done
 
@@ -85,9 +85,10 @@ fi
 
 sshpass -p $installer_account_password ssh installer\@$hadoop_auxiliary_ip 'bash -s' < finalise_auxiliary.sh
 
-#xxxxxxxx
-
 exit 0
+
+# E.g. command line for testing:
+# export installer_account_username=installer;export installer_account_password=0^3Dfxx;export hadoop_slave_count=2;export hadoop_auxiliary_ip=130.220.208.87;export hadoop_slave_list=130.56.248.178,130.56.249.90;./test.sh
 
 
 
