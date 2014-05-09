@@ -85,6 +85,8 @@ fi
 
 sshpass -p $installer_account_password ssh installer\@$hadoop_auxiliary_ip 'bash -s' < finalise_auxiliary.sh
 
+#xxxxxxxx
+
 exit 0
 
 
