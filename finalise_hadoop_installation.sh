@@ -83,7 +83,7 @@ fi
 
 # All VM's are good, so complete the installation
 
-sshpass -p $installer_account_password ssh installer\@$hadoop_auxiliary_ip 'bash -s' < finalise_auxiliary.sh
+sshpass -p $installer_account_password ssh $user\@$hadoop_auxiliary_ip 'bash -s' < finalise_auxiliary.sh
 
 exit 0
 

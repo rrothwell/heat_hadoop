@@ -167,7 +167,7 @@ Resources:
                         wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/configure_MRv1.sh
                         chmod u+x configure_MRv1.sh
                         export project_name=_project_name_
-                        export installer_account_username="installer"
+                        export installer_account_username="root"
                         export installer_account_password=_installer_account_password_
                         export hadoop_master_name=_hadoop_master_name_
                         export hadoop_master_domain=_hadoop_master_name_._base_domain_
@@ -181,7 +181,7 @@ Resources:
                         ./configure_hdfs.sh
                         ./configure_slave.sh
                         ./configure_MRv1.sh
-                        useradd -m -s /bin/bash $installer_account_username
+                        #useradd -m -s /bin/bash $installer_account_username
                         echo $installer_account_username:$installer_account_password | chpasswd
                         # Find this in /tmp
                         touch "installation_finished"
@@ -223,7 +223,7 @@ Resources:
                         wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/install_auxiliary_node.sh
                         chmod u+x install_auxiliary_node.sh
                         export project_name=_project_name_
-                        export installer_account_username="installer"
+                        export installer_account_username="root"
                         export installer_account_password=_installer_account_password_
                         export hadoop_master_name=_hadoop_master_name_
                         export hadoop_master_domain=_hadoop_master_name_._base_domain_
@@ -235,7 +235,7 @@ Resources:
                         ./install_auxiliary_node.sh
                         ./configure_common.sh
                         ./configure_hdfs.sh
-                        useradd -m -s /bin/bash $installer_account_username
+                        #useradd -m -s /bin/bash $installer_account_username
                         echo $installer_account_username:$installer_account_password | chpasswd
                         # Find this in /tmp
                         touch "installation_finished"
@@ -300,7 +300,7 @@ Resources:
                         wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/finalise_auxiliary.sh
                         chmod u+x finalise_auxiliary.sh
                         export project_name=_project_name_
-                        export installer_account_username="installer"
+                        export installer_account_username="root"
                         export installer_account_password=_installer_account_password_
                         export hadoop_base_domain=_base_domain_
                         export hadoop_master_name=_hadoop_master_name_
