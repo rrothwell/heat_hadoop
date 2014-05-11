@@ -158,9 +158,12 @@ mkdir -p /mnt/nfsmount;   mkdir -p /nfsmount;  mount --bind /mnt/nfsmount /nfsmo
 
 # For log files
 mkdir -p /mnt/log/hadoop-hdfs
-cp -a /var/log/hadoop-hdfs. /mnt/log/hadoop-hdfs/
+cp -a /var/log/hadoop-hdfs/. /mnt/log/hadoop-hdfs/
 rm -Rf /var/log/hadoop-hdfs
 mkdir /var/log/hadoop-hdfs
 mount --bind /mnt/log/hadoop-hdfs /var/log/hadoop-hdfs
+chown :hadoop /mnt/log/hadoop-hdfs
+chmod ug+w /mnt/log/hadoop-hdfs
+
 
 mkdir -p /mnt/log/zookeeper;   mkdir -p /var/log/zookeeper;  mount --bind /mnt/log/zookeeper /var/log/zookeeper

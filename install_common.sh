@@ -35,7 +35,8 @@ apt-get -y install python-software-properties python-setuptools
 ./install_java.sh
 
 # Set up DNS in /etc/hosts
-echo -e "$hadoop_instance_ip\t$hadoop_instance_domain\t$hadoop_instance_hostname\t$hadoop_instance_name" >> /etc/hosts;
+# Code moved to finalise script.
+#echo -e "$hadoop_instance_ip\t$hadoop_instance_domain\t$hadoop_instance_hostname\t$hadoop_instance_name" >> /etc/hosts;
 
 # Setup access to the Hadoop packages
 # Now refer to this:

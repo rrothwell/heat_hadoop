@@ -265,6 +265,10 @@ Resources:
                             Fn::GetAtt: 
                                 - "HadoopAuxiliary"
                                 - "PublicIp"
+                        _hadoop_auxiliary_hostname_:
+                            Fn::GetAtt: 
+                                - "HadoopAuxiliary"
+                                - "PublicDnsName"
                         _hadoop_slave_name_: {Ref: SlaveNodeName}
                         _hadoop_slave_list_:
                             Fn::GetAtt: 
@@ -301,19 +305,28 @@ Resources:
                         chmod u+x finalise_auxiliary.sh
                         export project_name=_project_name_
                         export installer_account_username="root"
-                        export installer_account_password=_installer_account_password_
+                        export installer_account_password=_installer_account_password_                        
                         export hadoop_base_domain=_base_domain_
+                        
                         export hadoop_master_name=_hadoop_master_name_
                         export hadoop_master_domain=_hadoop_master_name_._base_domain_
+                        export hadoop_master_ip=`wget -qO -  http://169.254.169.254/latest/meta-data/local-ipv4`
+                        export hadoop_master_hostname=`hostname`
+                        
                         export hadoop_instance_ip=`wget -qO -  http://169.254.169.254/latest/meta-data/local-ipv4`
-                        export hadoop_instance_hostname=`hostname`
                         export hadoop_instance_name=_hadoop_master_name_
                         export hadoop_instance_domain=_hadoop_master_name_._base_domain_
+                        export hadoop_instance_hostname=`hostname`
+                        
                         export hadoop_slave_name=_hadoop_slave_name_
                         export hadoop_slave_list=_hadoop_slave_list_
                         export hadoop_slave_count=_hadoop_slave_count_
+                        
+                        export hadoop_auxiliary_name=_hadoop_auxiliary_name_
                         export hadoop_auxiliary_domain=_hadoop_auxiliary_name_._base_domain_
                         export hadoop_auxiliary_ip=_hadoop_auxiliary_ip_
+                        export hadoop_auxiliary_hostname=_hadoop_auxiliary_hostname_
+                        
                         ./install_common.sh
                         ./install_master_node.sh
                         ./configure_common.sh

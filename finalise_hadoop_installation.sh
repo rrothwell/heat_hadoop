@@ -81,6 +81,18 @@ else
 	exit 1
 fi
 
+# Set up DNS in /etc/hosts on master.
+echo -e "$hadoop_master_ip\t$hadoop_master_domain\t$hadoop_master_hostname\t$hadoop_master_name" >> /etc/hosts;
+echo -e "$hadoop_auxiliary_ip\t$hadoop_auxiliary_domain\t$hadoop_auxiliary_hostname\t$hadoop_auxiliary_name" >> /etc/hosts;
+slave_index=0
+IFS=","
+for slave_node_ip in $hadoop_slave_list; do
+	actual_slave_name="$hadoop_slave_name_$slave_index"
+    hadoop_slave_domain=actual_slave_name._base_domain_
+	echo -e "$slave_node_ip\t$hadoop_slave_domain\t$hadoop_slave_hostname\t$actual_slave_name" >> /etc/hosts;
+	let slave_index=slave_index+1
+done
+
 # All VM's are good, so complete the installation
 
 sshpass -p $installer_account_password ssh $user\@$hadoop_auxiliary_ip 'bash -s' < finalise_auxiliary.sh
