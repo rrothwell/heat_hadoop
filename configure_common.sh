@@ -85,7 +85,7 @@ slave_index=0
 IFS=","
 for slave_node_ip in $hadoop_slave_list; do
 	actual_slave_name="${hadoop_slave_name}_${slave_index}"
-    hadoop_slave_domain="$actual_slave_name.$_base_domain_"
+    hadoop_slave_domain="${actual_slave_name}.${hadoop_base_domain}"
 	echo -e "$slave_node_ip\t$hadoop_slave_domain\t$actual_slave_name" >> /etc/hosts;
 	let slave_index=slave_index+1
 done
