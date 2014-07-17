@@ -23,7 +23,7 @@ Parameters:
         Type: "String"
         Default: "unicarbkb"
     TemporaryInstallerPassword: 
-        Description: "A password used used to finalised configuration across cluster members. "
+        Description: "A password used to finalised configuration across cluster members. "
         Type: "String"
         Default: "0^3Dfxx"
     KeyName: 
@@ -36,7 +36,7 @@ Parameters:
         Default: "2"
         MinValue: "1"
         MaxValue: "100"
-        Description: "The number of instances to create"
+        Description: "The number of slave instances to create"
     InstanceType:
         Description: "The size of the VM. "
         Type: String
@@ -58,7 +58,7 @@ Parameters:
         #Default: "ubuntu-12.04"
         #AllowedValues: ["ubuntu-12.04","ubuntu-12.4"]
     AvailabilityZone: 
-        Description: "Location of the running cluster. "
+        Description: "Physical location of the running cluster. "
         Type: String
         Default: "sa"
         AllowedValues:
@@ -105,7 +105,7 @@ Resources:
     ClusterSecurityGroup:
         Type: AWS::EC2::SecurityGroup
         Properties:
-            GroupDescription: Cluster commmunications allowed only from cluster members
+            GroupDescription: Cluster commmunications allowed only from other cluster members.
             SecurityGroupIngress:
                 - {IpProtocol: tcp, FromPort: '1', ToPort: '65535', SourceSecurityGroupName: {Ref: MemberSecurityGroup}}
     WebManagementSecurityGroup:
@@ -123,6 +123,7 @@ Resources:
         Type: "OS::Heat::InstanceGroup"
         Properties:
             # Availability zones here are both required and yet resolutely ignored.
+            # Martin says.
             AvailabilityZones: [Ref: "AvailabilityZone"] # Fn::GetAZs: ""
             LaunchConfigurationName: {Ref: "HadoopSlaveConfig"}
             Size: {Ref: SlaveCount}
@@ -181,7 +182,7 @@ Resources:
                         ./configure_hdfs.sh
                         ./configure_slave.sh
                         ./configure_MRv1.sh
-                        #useradd -m -s /bin/bash $installer_account_username
+                        useradd -m -s /bin/bash $installer_account_username
                         echo $installer_account_username:$installer_account_password | chpasswd
                         # Find this in /tmp
                         touch "installation_finished"
@@ -235,7 +236,7 @@ Resources:
                         ./install_auxiliary_node.sh
                         ./configure_common.sh
                         ./configure_hdfs.sh
-                        #useradd -m -s /bin/bash $installer_account_username
+                        useradd -m -s /bin/bash $installer_account_username
                         echo $installer_account_username:$installer_account_password | chpasswd
                         # Find this in /tmp
                         touch "installation_finished"
@@ -261,6 +262,7 @@ Resources:
                         _base_domain_: {Ref: BaseDomain}
                         _hadoop_master_name_: {Ref: MasterNodeName}
                         _hadoop_auxiliary_name_: {Ref: AuxiliaryNodeName}
+                        _installer_account_password_: {Ref: TemporaryInstallerPassword}
                         _hadoop_auxiliary_ip_:
                             Fn::GetAtt: 
                                 - "HadoopAuxiliary"
