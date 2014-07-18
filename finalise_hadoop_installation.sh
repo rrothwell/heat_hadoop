@@ -32,8 +32,8 @@ echo "Expected VM count: $expected_vm_count"
 # Set up DNS in /etc/hosts on master/auxiliary/slaves.
 
 echo -e "\n\n# Hadoop Cluster\n" >> /etc/hosts;
-echo -e "$hadoop_master_ip\t$hadoop_master_domain\t$hadoop_master_name" >> /etc/hosts;
-echo -e "$hadoop_auxiliary_ip\t$hadoop_auxiliary_domain\t$hadoop_auxiliary_name" >> /etc/hosts;
+echo -e "$hadoop_master_ip\t$hadoop_master_domain\t$hadoop_master_hostname\t$hadoop_master_name" >> /etc/hosts;
+echo -e "$hadoop_auxiliary_ip\t$hadoop_auxiliary_domain\t$hadoop_auxiliary_hostname\t$hadoop_auxiliary_name" >> /etc/hosts;
 slave_index=0
 IFS=","
 for slave_node_ip in $hadoop_slave_list; do
