@@ -1,4 +1,4 @@
-#!/bin/bash -v
+#!/bin/bash
 # ===========================================
 # Install Common Code for Node
 # Based on Cloudera Hadoop version 4

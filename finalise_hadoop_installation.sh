@@ -1,4 +1,4 @@
-#!/bin/bash -v
+#!/bin/bash
 # ===========================================
 # Copyright NeCTAR, May 2014, all rights reserved.
 # 
@@ -41,10 +41,11 @@ for slave_node_ip in $hadoop_slave_list; do
 	let slave_index=slave_index+1
 done
 
+echo "About to transfer /etc/hosts to auxiliary $hadoop_auxiliary_ip.\n"
 sshpass -p $password scp -o StrictHostKeyChecking=no /etc/hosts $user\@$hadoop_auxiliary_ip:~
-slave_index=0
 IFS=","
 for slave_node_ip in $hadoop_slave_list; do
+	echo "About to transfer /etc/hosts to slave $slave_node_ip.\n"
 	sshpass -p $password scp -o StrictHostKeyChecking=no /etc/hosts $user\@$slave_node_ip:~
 done
 

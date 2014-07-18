@@ -1,4 +1,4 @@
-#!/bin/bash -v
+#!/bin/bash
 # ===========================================
 # Install all packages needed for a Java server
 #

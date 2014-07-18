@@ -1,4 +1,4 @@
-#!/bin/bash -v
+#!/bin/bash
 # ===========================================
 # Copyright NeCTAR, May 2014, all rights reserved.
 # 
