@@ -178,6 +178,11 @@ Resources:
                         
                         export hadoop_auxiliary_name=_hadoop_auxiliary_name_
                         export hadoop_auxiliary_domain=_hadoop_auxiliary_name_._base_domain_
+
+                        export hadoop_slave_ip=`wget -qO -  http://169.254.169.254/latest/meta-data/local-ipv4`
+
+                        export hadoop_node_ip=hadoop_slave_ip
+                        export hadoop_node_hostname=`hostname`
                        
                         ./install_common.sh
                         ./install_slave_node.sh
@@ -240,7 +245,10 @@ Resources:
                         export hadoop_auxiliary_domain=_hadoop_auxiliary_name_._base_domain_
 
                         export hadoop_auxiliary_ip=`wget -qO -  http://169.254.169.254/latest/meta-data/local-ipv4`
-                        
+
+                        export hadoop_node_ip=hadoop_auxiliary_ip
+                        export hadoop_node_hostname=`hostname`
+                                             
                         ./install_common.sh
                         ./install_auxiliary_node.sh
                         ./configure_common.sh
@@ -330,7 +338,6 @@ Resources:
                         export hadoop_auxiliary_domain=_hadoop_auxiliary_name_._base_domain_
                         
                         export hadoop_base_domain=_base_domain_
-                        export hadoop_master_hostname=`hostname`
                         export hadoop_master_ip=`wget -qO -  http://169.254.169.254/latest/meta-data/local-ipv4`
                        
                         export hadoop_slave_name=_hadoop_slave_name_
@@ -340,6 +347,9 @@ Resources:
                         export hadoop_auxiliary_hostname=_hadoop_auxiliary_hostname_
                         export hadoop_auxiliary_ip=_hadoop_auxiliary_ip_
                         
+                        export hadoop_node_ip=hadoop_master_ip
+                        export hadoop_node_hostname=`hostname`
+                     
                         ./install_common.sh
                         ./install_master_node.sh
                         ./configure_common.sh

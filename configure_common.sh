@@ -83,5 +83,9 @@ cat <<DELIMITER > /etc/hadoop/conf.$project_name/masters
 $hadoop_auxiliary_domain
 DELIMITER
 
+echo -e "\n\n# Hadoop Cluster Node\n" >> /etc/hosts;
+echo -e "$hadoop_node_ip\t$hadoop_node_hostname" >> /etc/hosts;
+
+
 
 
