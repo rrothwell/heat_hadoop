@@ -20,6 +20,8 @@
 # Adjust configuration of remote VM's and then starts the Hadoop services
 # ===========================================
 
+echo "Establish configuration that depends on all nodes being up and running."
+
 # Remote account details.
 user=$installer_account_username
 password=$installer_account_password

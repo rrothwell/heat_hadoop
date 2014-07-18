@@ -176,11 +176,9 @@ Resources:
                         export hadoop_master_name=_hadoop_master_name_
                         export hadoop_master_domain=_hadoop_master_name_._base_domain_
                         
-                        export hadoop_instance_ip=`wget -qO -  http://169.254.169.254/latest/meta-data/local-ipv4`
-                        export hadoop_instance_hostname=`hostname`
-                        export hadoop_instance_name=_hadoop_slave_name_
-                        export hadoop_instance_domain=_hadoop_slave_name_._base_domain_
-                        
+                        export hadoop_auxiliary_name=_hadoop_auxiliary_name_
+                        export hadoop_auxiliary_domain=_hadoop_auxiliary_name_._base_domain_
+                       
                         ./install_common.sh
                         ./install_slave_node.sh
                         ./configure_common.sh
@@ -211,6 +209,7 @@ Resources:
                       - _project_name_: {Ref: ProjectName}
                         _installer_account_password_: {Ref: TemporaryInstallerPassword}
                         _base_domain_: {Ref: BaseDomain}
+                        _hadoop_master_name_: {Ref: MasterNodeName}
                         _hadoop_auxiliary_name_: {Ref: AuxiliaryNodeName}
                       - |
                         #!/bin/bash -v
@@ -234,15 +233,13 @@ Resources:
                         export installer_account_username="installer"
                         export installer_account_password=_installer_account_password_
                         
-                        export hadoop_instance_hostname=`hostname`
-                        export hadoop_instance_ip=`wget -qO -  http://169.254.169.254/latest/meta-data/local-ipv4`
-                        export hadoop_instance_name=_hadoop_auxiliary_name_
-                        export hadoop_instance_domain=_hadoop_auxiliary_name_._base_domain_
+                        export hadoop_master_name=_hadoop_master_name_
+                        export hadoop_master_domain=_hadoop_master_name_._base_domain_
 
-                        export hadoop_auxiliary_hostname=`hostname`
-                        export hadoop_auxiliary_ip=`wget -qO -  http://169.254.169.254/latest/meta-data/local-ipv4`
                         export hadoop_auxiliary_name=_hadoop_auxiliary_name_
                         export hadoop_auxiliary_domain=_hadoop_auxiliary_name_._base_domain_
+
+                        export hadoop_auxiliary_ip=`wget -qO -  http://169.254.169.254/latest/meta-data/local-ipv4`
                         
                         ./install_common.sh
                         ./install_auxiliary_node.sh
@@ -325,25 +322,21 @@ Resources:
                         export project_name=_project_name_
                         export installer_account_username="installer"
                         export installer_account_password=_installer_account_password_
-                                                
-                        export hadoop_base_domain=_base_domain_
-                        
-                        export hadoop_master_hostname=`hostname`
-                        export hadoop_master_ip=`wget -qO -  http://169.254.169.254/latest/meta-data/local-ipv4`
-                         export hadoop_master_name=_hadoop_master_name_
+                                                                       
+                        export hadoop_master_name=_hadoop_master_name_
                         export hadoop_master_domain=_hadoop_master_name_._base_domain_
-                       
-                        export hadoop_instance_hostname=`hostname`
-                        export hadoop_instance_ip=`wget -qO -  http://169.254.169.254/latest/meta-data/local-ipv4`
-                        export hadoop_instance_name=_hadoop_master_name_
-                        export hadoop_instance_domain=_hadoop_master_name_._base_domain_
+                        
+                        export hadoop_auxiliary_name=_hadoop_auxiliary_name_
+                        export hadoop_auxiliary_domain=_hadoop_auxiliary_name_._base_domain_
+                        
+                        export hadoop_master_hostname=`hostname` # Not used.
+                        export hadoop_master_ip=`wget -qO -  http://169.254.169.254/latest/meta-data/local-ipv4`
+                        export hadoop_base_domain=_base_domain_
                        
                         export hadoop_slave_name=_hadoop_slave_name_
                         export hadoop_slave_list=_hadoop_slave_list_
                         export hadoop_slave_count=_hadoop_slave_count_
                         
-                        export hadoop_auxiliary_name=_hadoop_auxiliary_name_
-                        export hadoop_auxiliary_domain=_hadoop_auxiliary_name_._base_domain_
                         export hadoop_auxiliary_hostname=_hadoop_auxiliary_hostname_
                         export hadoop_auxiliary_ip=_hadoop_auxiliary_ip_
                         

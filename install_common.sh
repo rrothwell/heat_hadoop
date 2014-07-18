@@ -20,6 +20,8 @@
 # http://www.michael-noll.com/tutorials/running-hadoop-on-ubuntu-linux-single-node-cluster/
 # ===========================================
 
+echo "Install common code for all cluster members"
+
 # Preparation.
 apt-get -y install python-software-properties python-setuptools 
 #apt-get -y python-pip
@@ -32,11 +34,8 @@ apt-get -y install python-software-properties python-setuptools
 #cfn-create-aws-symlinks -s /usr/local/bin/
 
 # Download and install Java.
-./install_java.sh
 
-# Set up DNS in /etc/hosts
-# Code moved to finalise script.
-#echo -e "$hadoop_instance_ip\t$hadoop_instance_domain\t$hadoop_instance_hostname\t$hadoop_instance_name" >> /etc/hosts;
+./install_java.sh
 
 # Setup access to the Hadoop packages
 # Now refer to this:

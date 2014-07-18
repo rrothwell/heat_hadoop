@@ -24,6 +24,8 @@
 #	TaskTracker
 # ===========================================
 
+echo "Install master node specific code."
+
 # Refer to this:
 # http://www.cloudera.com/content/cloudera-content/cloudera-docs/CDH4/4.2.0/CDH4-Installation-Guide/cdh4ig_topic_4_4.html
 

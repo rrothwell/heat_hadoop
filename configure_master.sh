@@ -23,6 +23,8 @@
 #	NameNode
 # ===========================================
 
+echo "Establish configuration for the cluster master node."
+
 echo "Slaves: $hadoop_slave_list"
 
 echo -n "" > slaves

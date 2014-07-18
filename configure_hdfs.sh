@@ -23,6 +23,8 @@
 #	hdfs-site.xml
 # ===========================================
 
+echo "Establish configuration common to all cluster members."
+
 # -------------------------------------------
 # Configure HDFS
 # -------------------------------------------

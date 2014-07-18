@@ -23,6 +23,8 @@
 #	core-site.xml
 # ===========================================
 
+echo "Establish configuration common to all cluster members."
+
 # -------------------------------------------
 # Storage Management
 # -------------------------------------------
@@ -33,6 +35,7 @@
 # directories will be for client apps only.
 # If hadoop components are installed after this the relevant section in the script
 # MUST be executed in isolation.
+
 ./bind_hadoop_directories.sh
 
 # -------------------------------------------
@@ -44,6 +47,7 @@
 # Not sure how far to go with this; does it include the secondary namenode as well?
 
 # Now configure our cluster. On all machines in cluster.
+
 cp -r /etc/hadoop/conf.empty /etc/hadoop/conf.$project_name
 update-alternatives --install /etc/hadoop/conf hadoop-conf /etc/hadoop/conf.$project_name 50
 update-alternatives --set hadoop-conf /etc/hadoop/conf.$project_name
@@ -74,6 +78,7 @@ cat <<DELIMITER > /etc/hadoop/conf.$project_name/core-site.xml
 DELIMITER
 
 # The list of secondarynamenodes.
+
 cat <<DELIMITER > /etc/hadoop/conf.$project_name/masters
 $hadoop_auxiliary_domain
 DELIMITER

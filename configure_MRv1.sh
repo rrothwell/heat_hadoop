@@ -21,6 +21,8 @@
 #
 # ===========================================
 
+echo "Establish configuration for MapReduce version 1."
+
 # -------------------------------------------
 # Deploy MRv1: MapReduce version 1
 # -------------------------------------------

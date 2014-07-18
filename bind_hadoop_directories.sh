@@ -17,6 +17,8 @@
 # bind_hadoop_directories.sh
 # ===========================================
 
+echo "==== Bind the Hadoop directories to actual directories in /mnt."
+
 # Cloudera application files.
 mkdir -p /mnt/lib/flume-ng
 cp -a /usr/lib/flume-ng/. /mnt/lib/flume-ng/
