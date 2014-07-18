@@ -188,9 +188,9 @@ Resources:
                         ./configure_slave.sh
                         ./configure_MRv1.sh
                         
-                        inoticoming /home/installer --prefix hosts mv -f /home/installer/hosts /etc/hosts \;
                         useradd -m -s /bin/bash $installer_account_username
                         echo "$installer_account_username:$installer_account_password" | chpasswd
+                        inoticoming /home/installer --prefix hosts mv -f /home/installer/hosts /etc/hosts \;
                         # Find this in /tmp
                         touch "installation_finished"
     HadoopAuxiliary: 
@@ -249,9 +249,9 @@ Resources:
                         ./configure_common.sh
                         ./configure_hdfs.sh
                         
-                        inoticoming /home/installer --prefix hosts mv -f /home/installer/hosts /etc/hosts \;
                         useradd -m -s /bin/bash $installer_account_username
                         echo "$installer_account_username:$installer_account_password" | chpasswd
+                        inoticoming /home/installer --prefix hosts mv -f /home/installer/hosts /etc/hosts \;
                         # Find this in /tmp
                         touch "installation_finished"
                         

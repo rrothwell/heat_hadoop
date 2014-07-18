@@ -45,7 +45,7 @@ sshpass -p $password scp -o StrictHostKeyChecking=no /etc/hosts $user\@$hadoop_a
 slave_index=0
 IFS=","
 for slave_node_ip in $hadoop_slave_list; do
-	sshpass -p $password scp -o StrictHostKeyChecking=no /etc/hosts $user\@$hadoop_auxiliary_ip:~
+	sshpass -p $password scp -o StrictHostKeyChecking=no /etc/hosts $user\@$slave_node_ip:~
 done
 
 
