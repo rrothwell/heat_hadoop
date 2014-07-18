@@ -27,6 +27,28 @@ password=$installer_account_password
 let expected_vm_count=hadoop_slave_count+1
 echo "Expected VM count: $expected_vm_count"
 
+# Set up DNS in /etc/hosts on master/auxiliary/slaves.
+
+echo -e "\n\n Hadoop Cluster\n" >> /etc/hosts;
+echo -e "$hadoop_master_ip\t$hadoop_master_domain\t$hadoop_master_name" >> /etc/hosts;
+echo -e "$hadoop_auxiliary_ip\t$hadoop_auxiliary_domain\t$hadoop_auxiliary_name" >> /etc/hosts;
+slave_index=0
+IFS=","
+for slave_node_ip in $hadoop_slave_list; do
+	actual_slave_name="${hadoop_slave_name}-${slave_index}"
+    hadoop_slave_domain="${actual_slave_name}.${hadoop_base_domain}"
+	echo -e "$slave_node_ip\t$hadoop_slave_domain\t$actual_slave_name" >> /etc/hosts;
+	let slave_index=slave_index+1
+done
+
+sshpass -p $password scp -o StrictHostKeyChecking=no /etc/hosts $user\@$hadoop_auxiliary_ip:/etc/hosts
+slave_index=0
+IFS=","
+for slave_node_ip in $hadoop_slave_list; do
+	sshpass -p $password scp -o StrictHostKeyChecking=no /etc/hosts $user\@$hadoop_auxiliary_ip:/etc/hosts
+done
+
+
 # Setup for timeout.
 
 current_time_secs=`date +%s`

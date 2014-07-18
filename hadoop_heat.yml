@@ -142,10 +142,11 @@ Resources:
                 Fn::Base64:
                     Fn::Replace:
                       - _project_name_: {Ref: ProjectName}
+                        _installer_account_password_: {Ref: TemporaryInstallerPassword}
                         _base_domain_: {Ref: BaseDomain}
                         _hadoop_master_name_: {Ref: MasterNodeName}
                         _hadoop_slave_name_: {Ref: SlaveNodeName}
-                        _installer_account_password_: {Ref: TemporaryInstallerPassword}
+                        _hadoop_slave_count_: {Ref: SlaveCount}
                       - |
                         #!/bin/bash -v
                         apt-get update; apt-get upgrade
@@ -167,15 +168,19 @@ Resources:
                         chmod u+x configure_slave.sh
                         wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/configure_MRv1.sh
                         chmod u+x configure_MRv1.sh
+                        
                         export project_name=_project_name_
                         export installer_account_username="installer"
                         export installer_account_password=_installer_account_password_
+                        
                         export hadoop_master_name=_hadoop_master_name_
                         export hadoop_master_domain=_hadoop_master_name_._base_domain_
+                        
                         export hadoop_instance_ip=`wget -qO -  http://169.254.169.254/latest/meta-data/local-ipv4`
                         export hadoop_instance_hostname=`hostname`
                         export hadoop_instance_name=_hadoop_slave_name_
                         export hadoop_instance_domain=_hadoop_slave_name_._base_domain_
+                        
                         ./install_common.sh
                         ./install_slave_node.sh
                         ./configure_common.sh
@@ -183,7 +188,7 @@ Resources:
                         ./configure_slave.sh
                         ./configure_MRv1.sh
                         useradd -m -s /bin/bash $installer_account_username
-                        echo $installer_account_username:$installer_account_password | chpasswd
+                        echo "$installer_account_username:$installer_account_password" | chpasswd
                         # Find this in /tmp
                         touch "installation_finished"
     HadoopAuxiliary: 
@@ -202,10 +207,18 @@ Resources:
                 Fn::Base64:
                     Fn::Replace:
                       - _project_name_: {Ref: ProjectName}
+                        _installer_account_password_: {Ref: TemporaryInstallerPassword}
                         _base_domain_: {Ref: BaseDomain}
                         _hadoop_master_name_: {Ref: MasterNodeName}
                         _hadoop_auxiliary_name_: {Ref: AuxiliaryNodeName}
-                        _installer_account_password_: {Ref: TemporaryInstallerPassword}
+                        _hadoop_slave_name_: {Ref: SlaveNodeName}
+                        _hadoop_slave_count_: {Ref: SlaveCount}
+                        _hadoop_slave_name_: {Ref: SlaveNodeName}
+                        _hadoop_slave_list_:
+                            Fn::GetAtt: 
+                                - "HadoopSlaveGroup"
+                                - "InstanceList"
+                        _hadoop_slave_count_: {Ref: SlaveCount}
                       - |
                         #!/bin/bash -v
                         apt-get update; apt-get upgrade
@@ -223,21 +236,34 @@ Resources:
                         chmod u+x configure_hdfs.sh
                         wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/install_auxiliary_node.sh
                         chmod u+x install_auxiliary_node.sh
+                        
                         export project_name=_project_name_
                         export installer_account_username="installer"
                         export installer_account_password=_installer_account_password_
+                        
                         export hadoop_master_name=_hadoop_master_name_
                         export hadoop_master_domain=_hadoop_master_name_._base_domain_
-                        export hadoop_instance_ip=`wget -qO -  http://169.254.169.254/latest/meta-data/local-ipv4`
+                        
                         export hadoop_instance_hostname=`hostname`
+                        export hadoop_instance_ip=`wget -qO -  http://169.254.169.254/latest/meta-data/local-ipv4`
                         export hadoop_instance_name=_hadoop_auxiliary_name_
                         export hadoop_instance_domain=_hadoop_auxiliary_name_._base_domain_
+
+                        export hadoop_auxiliary_hostname=`hostname`
+                        export hadoop_auxiliary_ip=`wget -qO -  http://169.254.169.254/latest/meta-data/local-ipv4`
+                        export hadoop_auxiliary_name=_hadoop_auxiliary_name_
+                        export hadoop_auxiliary_domain=_hadoop_auxiliary_name_._base_domain_
+
+                        export hadoop_slave_name=_hadoop_slave_name_
+                        export hadoop_slave_list=_hadoop_slave_list_
+                        export hadoop_slave_count=_hadoop_slave_count_                       
+                        
                         ./install_common.sh
                         ./install_auxiliary_node.sh
                         ./configure_common.sh
                         ./configure_hdfs.sh
                         useradd -m -s /bin/bash $installer_account_username
-                        echo $installer_account_username:$installer_account_password | chpasswd
+                        echo "$installer_account_username:$installer_account_password" | chpasswd
                         # Find this in /tmp
                         touch "installation_finished"
 # http://docs.openstack.org/developer/heat/template_guide/cfn.html#AWS::EC2::Instance
@@ -259,10 +285,10 @@ Resources:
                 Fn::Base64:
                     Fn::Replace:
                       - _project_name_: {Ref: ProjectName}
+                        _installer_account_password_: {Ref: TemporaryInstallerPassword}
                         _base_domain_: {Ref: BaseDomain}
                         _hadoop_master_name_: {Ref: MasterNodeName}
                         _hadoop_auxiliary_name_: {Ref: AuxiliaryNodeName}
-                        _installer_account_password_: {Ref: TemporaryInstallerPassword}
                         _hadoop_auxiliary_ip_:
                             Fn::GetAtt: 
                                 - "HadoopAuxiliary"
@@ -305,29 +331,31 @@ Resources:
                         chmod u+x finalise_hadoop_installation.sh
                         wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/finalise_auxiliary.sh
                         chmod u+x finalise_auxiliary.sh
+                        
                         export project_name=_project_name_
                         export installer_account_username="installer"
-                        export installer_account_password=_installer_account_password_                        
+                        export installer_account_password=_installer_account_password_
+                                                
                         export hadoop_base_domain=_base_domain_
                         
-                        export hadoop_master_name=_hadoop_master_name_
-                        export hadoop_master_domain=_hadoop_master_name_._base_domain_
-                        export hadoop_master_ip=`wget -qO -  http://169.254.169.254/latest/meta-data/local-ipv4`
                         export hadoop_master_hostname=`hostname`
-                        
-                        export hadoop_instance_ip=`wget -qO -  http://169.254.169.254/latest/meta-data/local-ipv4`
-                        export hadoop_instance_name=_hadoop_master_name_
-                        export hadoop_instance_domain=_hadoop_master_name_._base_domain_
+                        export hadoop_master_ip=`wget -qO -  http://169.254.169.254/latest/meta-data/local-ipv4`
+                         export hadoop_master_name=_hadoop_master_name_
+                        export hadoop_master_domain=_hadoop_master_name_._base_domain_
+                       
                         export hadoop_instance_hostname=`hostname`
-                        
+                        export hadoop_instance_ip=`wget -qO -  http://169.254.169.254/latest/meta-data/local-ipv4`
+                         export hadoop_instance_name=_hadoop_master_name_
+                        export hadoop_instance_domain=_hadoop_master_name_._base_domain_
+                       
                         export hadoop_slave_name=_hadoop_slave_name_
                         export hadoop_slave_list=_hadoop_slave_list_
                         export hadoop_slave_count=_hadoop_slave_count_
                         
                         export hadoop_auxiliary_name=_hadoop_auxiliary_name_
                         export hadoop_auxiliary_domain=_hadoop_auxiliary_name_._base_domain_
-                        export hadoop_auxiliary_ip=_hadoop_auxiliary_ip_
                         export hadoop_auxiliary_hostname=_hadoop_auxiliary_hostname_
+                        export hadoop_auxiliary_ip=_hadoop_auxiliary_ip_
                         
                         ./install_common.sh
                         ./install_master_node.sh
