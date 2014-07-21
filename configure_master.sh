@@ -27,11 +27,14 @@ echo "Establish configuration for the cluster master node."
 
 echo "Slaves: $hadoop_slave_list"
 
-echo -n "" > slaves
+slave_file="/etc/hadoop/conf.$project_name/slaves"
+echo -e "Slave file: $slave_file";
+
+echo -n "" > slave_file
 COUNTER=1
 IFS=","
 for slave in $hadoop_slave_list; do
-    echo "$hadoop_slave_name-$COUNTER.$hadoop_base_domain" >> slaves
+    echo "$hadoop_slave_name-$COUNTER.$hadoop_base_domain" >> slave_file
     COUNTER=$((COUNTER+1))
 done
 
@@ -52,13 +55,15 @@ dataDir=/var/lib/zookeeper
 clientPort=2181
 DELIMITER
 
+# Expect to see in zoo.cfg the following:
 #server.2=slave1unicarbkb.doesntexist.org:2888:3888
 #server.3=slave2unicarbkb.doesntexist.org:2888:3888
 #server.4=slave3unicarbkb.doesntexist.org:2888:3888
 
-COUNTER=1
+COUNTER=0
 IFS=","
 for slave in $hadoop_slave_list; do
-    echo "server.$COUNTER=$hadoop_slave_name-$COUNTER.$hadoop_base_domain:2888:3888" >> /etc/zookeeper/conf.dist/zoo.cfg
-    COUNTER=$((COUNTER+1))
+	counter1=$((COUNTER+1))
+    echo "server.$counter1=$hadoop_slave_name-$COUNTER.$hadoop_base_domain:2888:3888" >> /etc/zookeeper/conf.dist/zoo.cfg
+    COUNTER=counter1
 done

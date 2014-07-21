@@ -53,7 +53,8 @@ apt-get update
 #service zookeeper-server start
 #vi /etc/zookeeper/conf.dist/zoo.cfg
 
-# We use this to move files into position after they are transfered to the installer directory by the master.
+# We use this to move files into position 
+# after they are transferred to the installer directory by the master.
 apt-get install  inoticoming
 
 

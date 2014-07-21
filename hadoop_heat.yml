@@ -193,7 +193,7 @@ Resources:
                         
                         useradd -m -s /bin/bash $installer_account_username
                         echo "$installer_account_username:$installer_account_password" | chpasswd
-                        inoticoming /home/installer --prefix host cat /home/installer/host_list >> /etc/hosts \;
+                        inoticoming /home/installer --prefix host bash -c 'cat /home/installer/host_list >> /etc/hosts' \;
                         # Find this in /tmp
                         touch "installation_finished"
     HadoopAuxiliary: 
@@ -256,7 +256,7 @@ Resources:
                         
                         useradd -m -s /bin/bash $installer_account_username
                         echo "$installer_account_username:$installer_account_password" | chpasswd
-                        inoticoming /home/installer --prefix host cat /home/installer/host_list >> /etc/hosts \;
+                        inoticoming /home/installer --prefix host bash -c 'cat /home/installer/host_list >> /etc/hosts' \;
                         # Find this in /tmp
                         touch "installation_finished"
                         

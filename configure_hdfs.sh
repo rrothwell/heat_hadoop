@@ -23,7 +23,7 @@
 #	hdfs-site.xml
 # ===========================================
 
-echo "Establish configuration common to all cluster members."
+echo "Establish common hdfs configuration to all cluster members."
 
 # -------------------------------------------
 # Configure HDFS
@@ -87,6 +87,8 @@ DELIMITER
 
 # Create the directories and set the permissions
 # Do on all cluster members.
+# /data has already been mapped to /mnt/data. 
+# -- See bind_hadoop_directories.sh in configure_common.sh
 mkdir -p /data/1/dfs/nn /nfsmount/dfs/nn
 mkdir -p /data/1/dfs/dn /data/2/dfs/dn /data/3/dfs/dn /data/4/dfs/dn
 chown -R hdfs:hdfs /data/1/dfs/nn /nfsmount/dfs/nn /data/1/dfs/dn /data/2/dfs/dn /data/3/dfs/dn /data/4/dfs/dn
