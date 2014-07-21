@@ -60,7 +60,7 @@ for slave_node_ip in $hadoop_slave_list; do
 	sshpass -p $password ssh -o StrictHostKeyChecking=no $user\@$slave_node_ip extra_hosts=$extra_hosts 'bash -s' <<ENDSSH
 		touch ~/host_list
 		echo -e $extra_hosts >> ~/host_list;
-	ENDSSH
+ENDSSH
 done
 
 # Setup for timeout.
