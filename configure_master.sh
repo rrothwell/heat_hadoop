@@ -65,5 +65,5 @@ IFS=","
 for slave in $hadoop_slave_list; do
 	counter1=$((COUNTER+1))
     echo "server.$counter1=$hadoop_slave_name-$COUNTER.$hadoop_base_domain:2888:3888" >> /etc/zookeeper/conf.dist/zoo.cfg
-    set COUNTER=$((COUNTER+1))
+    COUNTER=$((COUNTER+1))
 done
