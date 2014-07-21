@@ -30,11 +30,11 @@ echo "Slaves: $hadoop_slave_list"
 slave_file="/etc/hadoop/conf.$project_name/slaves"
 echo -e "Slave file: $slave_file";
 
-echo -n "" > slave_file
-COUNTER=1
+echo -n "" > $slave_file
+COUNTER=0
 IFS=","
 for slave in $hadoop_slave_list; do
-    echo "$hadoop_slave_name-$COUNTER.$hadoop_base_domain" >> slave_file
+    echo "$hadoop_slave_name-$COUNTER.$hadoop_base_domain" >> $slave_file
     COUNTER=$((COUNTER+1))
 done
 
@@ -65,5 +65,5 @@ IFS=","
 for slave in $hadoop_slave_list; do
 	counter1=$((COUNTER+1))
     echo "server.$counter1=$hadoop_slave_name-$COUNTER.$hadoop_base_domain:2888:3888" >> /etc/zookeeper/conf.dist/zoo.cfg
-    COUNTER=counter1
+    set COUNTER=$((COUNTER+1))
 done
