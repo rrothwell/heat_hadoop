@@ -45,23 +45,21 @@ for slave_node_ip in $hadoop_slave_list; do
 	let slave_index=slave_index+1
 done
 
-echo "About to transfer /etc/hosts to auxiliary $hadoop_auxiliary_ip.\n"
+echo "About to transfer extra hosts to /etc/hosts on master $hadoop_master_ip.\n"
+echo -e $extra_hosts >> /etc/hosts;
 
-#ssh user@host ARG1=$ARG1 ARG2=$ARG2 'bash -s' <<'ENDSSH'
-#  # commands to run on remote host
-#  echo $ARG1 $ARG2
-#ENDSSH
-
-sshpass -p 0^3Dfxx ssh -o StrictHostKeyChecking=no installer@130.220.208.87 'bash -s' <<'ENDSSH'
-	echo -e $extra_hosts >> /etc/hosts;
+echo "About to transfer extra hosts to /etc/hosts on auxiliary $hadoop_auxiliary_ip.\n"
+sshpass -p $password ssh -o StrictHostKeyChecking=no $user\@$hadoop_auxiliary_ip extra_hosts=$extra_hosts 'bash -s' <<'ENDSSH'
+	touch ~/host_list
+	echo -e $extra_hosts >> ~/host_list;
 ENDSSH
 
 IFS=","
 for slave_node_ip in $hadoop_slave_list; do
-	echo "About to transfer /etc/hosts to slave $slave_node_ip.\n"
-	sshpass -p $password ssh -o StrictHostKeyChecking=no $user\@$hadoop_auxiliary_ip extra_hosts=$extra_hosts 'bash -s' <<'ENDSSH'
+	echo "About to transfer extra hosts to /etc/hosts on slave $slave_node_ip.\n"
+	sshpass -p $password ssh -o StrictHostKeyChecking=no $user\@$slave_node_ip extra_hosts=$extra_hosts 'bash -s' <<'ENDSSH'
 		touch ~/host_list
-		echo -e $extra_hosts >> /etc/hosts;
+		echo -e $extra_hosts >> ~/host_list;
 	ENDSSH
 done
 
