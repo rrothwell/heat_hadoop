@@ -49,7 +49,7 @@ echo "About to transfer extra hosts to /etc/hosts on master $hadoop_master_ip.\n
 echo -e $extra_hosts >> /etc/hosts;
 
 echo "About to transfer extra hosts to /etc/hosts on auxiliary $hadoop_auxiliary_ip.\n"
-sshpass -p $password ssh -o StrictHostKeyChecking=no $user\@$hadoop_auxiliary_ip extra_hosts=$extra_hosts 'bash -s' <<'ENDSSH'
+sshpass -p $password ssh -o StrictHostKeyChecking=no $user\@$hadoop_auxiliary_ip extra_hosts=$extra_hosts 'bash -s' <<ENDSSH
 	touch ~/host_list
 	echo -e $extra_hosts >> ~/host_list;
 ENDSSH
@@ -57,7 +57,7 @@ ENDSSH
 IFS=","
 for slave_node_ip in $hadoop_slave_list; do
 	echo "About to transfer extra hosts to /etc/hosts on slave $slave_node_ip.\n"
-	sshpass -p $password ssh -o StrictHostKeyChecking=no $user\@$slave_node_ip extra_hosts=$extra_hosts 'bash -s' <<'ENDSSH'
+	sshpass -p $password ssh -o StrictHostKeyChecking=no $user\@$slave_node_ip extra_hosts=$extra_hosts 'bash -s' <<ENDSSH
 		touch ~/host_list
 		echo -e $extra_hosts >> ~/host_list;
 	ENDSSH
