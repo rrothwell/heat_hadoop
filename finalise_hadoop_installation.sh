@@ -32,26 +32,38 @@ echo "Expected VM count: $expected_vm_count"
 # Set up DNS in /etc/hosts on master/auxiliary/slaves.
 # This adds more entries to what is already set up on an instance by instance basis.
 
-echo -e "\n\n# Hadoop Cluster Group\n" >> /etc/hosts;
-echo -e "$hadoop_master_ip\t$hadoop_master_domain\t$hadoop_master_name" >> /etc/hosts;
-echo -e "$hadoop_auxiliary_ip\t$hadoop_auxiliary_domain\t$hadoop_auxiliary_name" >> /etc/hosts;
+extra_hosts="\n\n# Hadoop Cluster Group\n\
+\n$hadoop_master_ip\t$hadoop_master_domain\t$hadoop_master_name\
+\n$hadoop_auxiliary_ip\t$hadoop_auxiliary_domain\t$hadoop_auxiliary_name"
+
 slave_index=0
 IFS=","
 for slave_node_ip in $hadoop_slave_list; do
 	actual_slave_name="${hadoop_slave_name}-${slave_index}"
     hadoop_slave_domain="${actual_slave_name}.${hadoop_base_domain}"
-	echo -e "$slave_node_ip\t$hadoop_slave_domain\t$actual_slave_name" >> /etc/hosts;
+	extra_hosts+="\n$slave_node_ip\t$hadoop_slave_domain\t$actual_slave_name"
 	let slave_index=slave_index+1
 done
 
 echo "About to transfer /etc/hosts to auxiliary $hadoop_auxiliary_ip.\n"
-sshpass -p $password scp -o StrictHostKeyChecking=no /etc/hosts $user\@$hadoop_auxiliary_ip:~
+
+#ssh user@host ARG1=$ARG1 ARG2=$ARG2 'bash -s' <<'ENDSSH'
+#  # commands to run on remote host
+#  echo $ARG1 $ARG2
+#ENDSSH
+
+sshpass -p 0^3Dfxx ssh -o StrictHostKeyChecking=no installer@130.220.208.87 'bash -s' <<'ENDSSH'
+	echo -e $extra_hosts >> /etc/hosts;
+ENDSSH
+
 IFS=","
 for slave_node_ip in $hadoop_slave_list; do
 	echo "About to transfer /etc/hosts to slave $slave_node_ip.\n"
-	sshpass -p $password scp -o StrictHostKeyChecking=no /etc/hosts $user\@$slave_node_ip:~
+	sshpass -p $password ssh -o StrictHostKeyChecking=no $user\@$hadoop_auxiliary_ip extra_hosts=$extra_hosts 'bash -s' <<'ENDSSH'
+		touch ~/host_list
+		echo -e $extra_hosts >> /etc/hosts;
+	ENDSSH
 done
-
 
 # Setup for timeout.
 
