@@ -233,8 +233,8 @@ Resources:
                         chmod u+x configure_hdfs.sh
                         wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/install_auxiliary_node.sh
                         chmod u+x install_auxiliary_node.sh
-                        wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/finalise_auxiliary.sh
-                        chmod u+x finalise_auxiliary.sh
+                        wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/start_hdfs_auxiliary.sh
+                        chmod u+x start_hdfs_auxiliary.sh
                         
                         export project_name=_project_name_
                         export installer_account_username="installer"
@@ -259,7 +259,7 @@ Resources:
                         useradd -m -s /bin/bash $installer_account_username
                         echo "$installer_account_username:$installer_account_password" | chpasswd
                         inoticoming /home/installer --prefix host bash -c 'cat /home/installer/host_list >> /etc/hosts' \;
-                        inoticoming /home/installer --prefix finaliser /tmp/finalise_auxiliary.sh \;
+                        inoticoming /home/installer --prefix finaliser /tmp/start_hdfs_auxiliary.sh \;
                         # Find this in /tmp
                         touch "installation_finished"
                         
@@ -317,8 +317,8 @@ Resources:
                         chmod u+x configure_common.sh
                         wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/configure_hdfs.sh
                         chmod u+x configure_hdfs.sh
-                        wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/configure_hdfs_master.sh
-                        chmod u+x configure_hdfs_master.sh
+                        wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/start_hdfs_master.sh
+                        chmod u+x start_hdfs_master.sh
                         wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/install_master_node.sh
                         chmod u+x install_master_node.sh
                         wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/configure_master.sh
@@ -358,7 +358,7 @@ Resources:
                         ./configure_master.sh
                         ./configure_MRv1.sh
                         ./finalise_hadoop_installation.sh
-                        ./configure_hdfs_master.sh
+                        ./start_hdfs_master.sh
 #Outputs: 
 #    MasterNodeIp: 
 #        Description: "Login via ssh using this command: "
