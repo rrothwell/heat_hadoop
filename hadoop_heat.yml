@@ -233,6 +233,8 @@ Resources:
                         chmod u+x configure_hdfs.sh
                         wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/install_auxiliary_node.sh
                         chmod u+x install_auxiliary_node.sh
+                        wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/finalise_auxiliary.sh
+                        chmod u+x finalise_auxiliary.sh
                         
                         export project_name=_project_name_
                         export installer_account_username="installer"
@@ -257,6 +259,7 @@ Resources:
                         useradd -m -s /bin/bash $installer_account_username
                         echo "$installer_account_username:$installer_account_password" | chpasswd
                         inoticoming /home/installer --prefix host bash -c 'cat /home/installer/host_list >> /etc/hosts' \;
+                        inoticoming /home/installer --prefix finaliser ./finalise_auxiliary.sh \;
                         # Find this in /tmp
                         touch "installation_finished"
                         
@@ -324,8 +327,6 @@ Resources:
                         chmod u+x configure_MRv1.sh
                         wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/finalise_hadoop_installation.sh
                         chmod u+x finalise_hadoop_installation.sh
-                        wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/finalise_auxiliary.sh
-                        chmod u+x finalise_auxiliary.sh
                         
                         export project_name=_project_name_
                         export installer_account_username="installer"

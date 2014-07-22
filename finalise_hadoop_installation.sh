@@ -119,17 +119,20 @@ fi
 
 # All VM's are good, so complete the installation
 
-sshpass -p $installer_account_password ssh $user\@$hadoop_auxiliary_ip 'bash -s' < finalise_auxiliary.sh
+echo "About to trigger finalise on auxiliary $hadoop_auxiliary_ip.\n"
+sshpass -p $password ssh -o StrictHostKeyChecking=no $user\@$hadoop_auxiliary_ip 'bash -s' <<ENDSSH
+	touch ~/finaliser
+ENDSSH
 
 exit 0
 
 # Example command line for testing:
-export installer_account_username=installer;\
-export installer_account_password=0^3Dfxx; \
-export hadoop_slave_count=2; \
-export hadoop_auxiliary_ip=130.220.208.87; \
-export hadoop_slave_list=130.56.248.178,130.56.249.90; \
-./test.sh
+# export installer_account_username=installer;\
+# export installer_account_password=0^3Dfxx; \
+# export hadoop_slave_count=2; \
+# export hadoop_auxiliary_ip=130.220.208.87; \
+# export hadoop_slave_list=130.56.248.178,130.56.249.90; \
+# ./test.sh
 
 
 
