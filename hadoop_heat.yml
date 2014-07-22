@@ -259,7 +259,7 @@ Resources:
                         useradd -m -s /bin/bash $installer_account_username
                         echo "$installer_account_username:$installer_account_password" | chpasswd
                         inoticoming /home/installer --prefix host bash -c 'cat /home/installer/host_list >> /etc/hosts' \;
-                        inoticoming /home/installer --prefix finaliser ./finalise_auxiliary.sh \;
+                        inoticoming /home/installer --prefix finaliser /tmp/finalise_auxiliary.sh \;
                         # Find this in /tmp
                         touch "installation_finished"
                         
