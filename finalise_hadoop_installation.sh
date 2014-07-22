@@ -105,6 +105,8 @@ while [  $current_time_secs -lt $timeout_secs ]; do
 	let try_counter=try_counter+1 
 	echo "The try count is $try_counter"
 	current_time_secs=`date +%s`
+	
+	sleep 1
 done
 
 # Verify that timeout did not trigger. If it did we give up.
@@ -121,21 +123,21 @@ fi
 
 # Distribute the slaves file.
 slave_file="/etc/hadoop/conf.$project_name/slaves"
-sshpass -p $password scp -o StrictHostKeyChecking=no slave_file $user\@$hadoop_auxiliary_ip:~
+sshpass -p $password scp -o StrictHostKeyChecking=no $slave_file $user\@$hadoop_auxiliary_ip:~
 slave_index=0
 IFS=","
 for slave_node_ip in $hadoop_slave_list; do
-	sshpass -p $password scp -o StrictHostKeyChecking=no slave_file $user\@$slave_node_ip:~
+	sshpass -p $password scp -o StrictHostKeyChecking=no $slave_file $user\@$slave_node_ip:~
 	let slave_index=slave_index+1
 done
 
 # Distribute the ZooKeeper configuration file.
 zoo_file="/etc/zookeeper/conf.dist/zoo.cfg"
-sshpass -p $password scp -o StrictHostKeyChecking=no zoo_file $user\@$hadoop_auxiliary_ip:~
+sshpass -p $password scp -o StrictHostKeyChecking=no $zoo_file $user\@$hadoop_auxiliary_ip:~
 slave_index=0
 IFS=","
 for slave_node_ip in $hadoop_slave_list; do
-	sshpass -p $password scp -o StrictHostKeyChecking=no zoo_file $user\@$slave_node_ip:~
+	sshpass -p $password scp -o StrictHostKeyChecking=no $zoo_file $user\@$slave_node_ip:~
 	let slave_index=slave_index+1
 done
 
