@@ -124,6 +124,14 @@ sshpass -p $password ssh -o StrictHostKeyChecking=no $user\@$hadoop_auxiliary_ip
 	touch ~/finaliser
 ENDSSH
 
+IFS=","
+for slave_node_ip in $hadoop_slave_list; do
+	echo "About to trigger finalise on slave $slave_node_ip.\n"
+	sshpass -p $password ssh -o StrictHostKeyChecking=no $user\@$slave_node_ip 'bash -s' <<ENDSSH
+	touch ~/finaliser
+ENDSSH
+done
+
 exit 0
 
 # Example command line for testing:

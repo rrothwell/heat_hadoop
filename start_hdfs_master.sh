@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions 
 # and limitations under the License.
 # ===========================================
-# configure_hdfs_master.sh
+# start_hdfs_master.sh
 # ===========================================
 # Create Directories and Install Common Configuration Across All Nodes
 # Based on Cloudera Hadoop version 4

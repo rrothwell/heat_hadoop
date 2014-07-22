@@ -14,16 +14,15 @@
 # See the License for the specific language governing permissions 
 # and limitations under the License.
 # ===========================================
-# # start_hdfs_auxiliary.sh
+# start_hdfs_slave.sh
 # ===========================================
-# Finalise installation on auxiliary
+# Finalise installation on slave
 # Based on Cloudera Hadoop version 4
 #
 # Adjust configuration of remote VM's and then starts the services
 # ===========================================
 
-#update-rc.d hadoop-hdfs-secondarynamenode defaults
-service hadoop-hdfs-secondarynamenode start
+service hadoop-hdfs-datanode start
 
 
 
