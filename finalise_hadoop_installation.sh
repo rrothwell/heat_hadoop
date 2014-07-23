@@ -26,7 +26,7 @@ echo "Establish configuration that depends on all nodes being up and running."
 user=$installer_account_username
 password=$installer_account_password
 
-let expected_vm_count=hadoop_slave_count+1
+let expected_vm_count=hadoop_slave_count+2
 echo "Expected VM count: $expected_vm_count"
 
 # Setup for timeout.
@@ -189,12 +189,14 @@ done
 exit 0
 
 # Example command line for testing:
-# export installer_account_username=installer;\
-# export installer_account_password=0^3Dfxx; \
-# export hadoop_slave_count=2; \
-# export hadoop_auxiliary_ip=130.220.208.87; \
-# export hadoop_slave_list=130.56.248.178,130.56.249.90; \
-# ./test.sh
+export project_name=unicarbkb;\
+export installer_account_username=installer;\
+export installer_account_password=0^3Dfxx;\
+export hadoop_slave_count=2;\
+export hadoop_auxiliary_ip=130.220.208.147;\
+export hadoop_slave_ip=130.220.208.118;\
+export hadoop_slave_list=130.56.250.128,130.56.250.196;\
+~/test.sh
 
 
 
