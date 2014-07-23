@@ -34,7 +34,8 @@ echo "Expected VM count: $expected_vm_count"
 
 extra_hosts="\n\n# Hadoop Cluster Group\n\
 \n$hadoop_master_ip\t$hadoop_master_domain\t$hadoop_master_name\
-\n$hadoop_auxiliary_ip\t$hadoop_auxiliary_domain\t$hadoop_auxiliary_name"
+\n$hadoop_auxiliary_ip\t$hadoop_auxiliary_domain\t$hadoop_auxiliary_name\
+\n$hadoop_slave_ip\t$hadoop_slave_domain_0\t$hadoop_slave_name_0"
 
 slave_index=0
 IFS=","
@@ -50,6 +51,12 @@ echo -e $extra_hosts >> /etc/hosts;
 
 echo "About to transfer extra hosts to /etc/hosts on auxiliary $hadoop_auxiliary_ip.\n"
 sshpass -p $password ssh -o StrictHostKeyChecking=no $user\@$hadoop_auxiliary_ip 'bash -s' <<ENDSSH
+	touch ~/host_list
+	echo -e "$extra_hosts" >> ~/host_list;
+ENDSSH
+
+echo "About to transfer extra hosts to /etc/hosts on slave $hadoop_slave_ip.\n"
+sshpass -p $password ssh -o StrictHostKeyChecking=no $user\@$hadoop_slave_ip 'bash -s' <<ENDSSH
 	touch ~/host_list
 	echo -e "$extra_hosts" >> ~/host_list;
 ENDSSH
@@ -84,6 +91,13 @@ while [  $current_time_secs -lt $timeout_secs ]; do
 	if sshpass -p $password scp -o StrictHostKeyChecking=no $user\@$hadoop_auxiliary_ip:/tmp/installation_finished ./ >&/dev/null ; then
 		let vm_count=vm_count+1 
 		message="Installation auxiliary on $hadoop_auxiliary_ip finished." ;
+	fi
+	echo $message
+	
+	message="Installation on slave $hadoop_slave_ip NOT finished." 
+	if sshpass -p $password scp -o StrictHostKeyChecking=no $user\@$hadoop_slave_ip:/tmp/installation_finished ./ >&/dev/null ; then
+		let vm_count=vm_count+1 
+		message="Installation slave on $hadoop_slave_ip finished." ;
 	fi
 	echo $message
 	
@@ -124,6 +138,7 @@ fi
 # Distribute the slaves file.
 slave_file="/etc/hadoop/conf.$project_name/slaves"
 sshpass -p $password scp -o StrictHostKeyChecking=no $slave_file $user\@$hadoop_auxiliary_ip:~
+sshpass -p $password scp -o StrictHostKeyChecking=no $slave_file $user\@$hadoop_slave_ip:~
 slave_index=0
 IFS=","
 for slave_node_ip in $hadoop_slave_list; do
@@ -134,6 +149,7 @@ done
 # Distribute the ZooKeeper configuration file.
 zoo_file="/etc/zookeeper/conf.dist/zoo.cfg"
 sshpass -p $password scp -o StrictHostKeyChecking=no $zoo_file $user\@$hadoop_auxiliary_ip:~
+sshpass -p $password scp -o StrictHostKeyChecking=no $zoo_file $user\@$hadoop_slave_ip:~
 slave_index=0
 IFS=","
 for slave_node_ip in $hadoop_slave_list; do
@@ -144,6 +160,11 @@ done
 
 echo "About to trigger finalise on auxiliary $hadoop_auxiliary_ip.\n"
 sshpass -p $password ssh -o StrictHostKeyChecking=no $user\@$hadoop_auxiliary_ip 'bash -s' <<ENDSSH
+	touch ~/finaliser
+ENDSSH
+
+echo "About to trigger finalise on slave $hadoop_slave_ip.\n"
+sshpass -p $password ssh -o StrictHostKeyChecking=no $user\@$hadoop_slave_ip 'bash -s' <<ENDSSH
 	touch ~/finaliser
 ENDSSH
 

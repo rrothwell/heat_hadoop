@@ -23,6 +23,6 @@
 # ===========================================
 
 service hadoop-hdfs-datanode start
-
+service hadoop-0.20-mapreduce-tasktracker start
 
 

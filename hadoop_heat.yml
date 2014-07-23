@@ -107,7 +107,7 @@ Resources:
         Properties:
             GroupDescription: Cluster commmunications allowed only from other cluster members.
             SecurityGroupIngress:
-                - {IpProtocol: tcp, FromPort: '1', ToPort: '65535', SourceSecurityGroupName: {Ref: MemberSecurityGroup}}
+                - {IpProtocol: tcp, FromPort: '1', ToPort: '65535', SourceSecurityGroupName: {"Ref": "MemberSecurityGroup"}}
     WebManagementSecurityGroup:
         Type: AWS::EC2::SecurityGroup
         Properties:
@@ -135,9 +135,9 @@ Resources:
             ImageId:  {Ref: ImageId}
             InstanceType: {Ref: InstanceType}
             SecurityGroups: 
-                - {Ref: DefaultSecurityGroup}
-                - {Ref: MemberSecurityGroup}
-                - {Ref: ClusterSecurityGroup}
+                - {Ref: "MemberSecurityGroup"}
+                - {Ref: "ClusterSecurityGroup"}
+                - {Ref: "DefaultSecurityGroup"}
             UserData:
                 Fn::Base64:
                     Fn::Replace:
@@ -202,6 +202,82 @@ Resources:
                         inoticoming /home/installer --prefix finaliser /tmp/start_hdfs_slave.sh \;
                         # Find this in /tmp
                         touch "installation_finished"
+    HadoopSlave: 
+        Type: "AWS::EC2::Instance"
+        Properties: 
+            KeyName: {Ref: KeyName}
+            #ImageId: {Fn::FindInMap: [InstanceId, {Ref: ImageName}, ImageId]}
+            ImageId:  {Ref: ImageId}
+            InstanceType: {Ref: InstanceType}
+            AvailabilityZone: {Ref: AvailabilityZone}
+            SecurityGroups: 
+                - {Ref: "DefaultSecurityGroup"}
+                - {Ref: "MemberSecurityGroup"}
+                - {Ref: "ClusterSecurityGroup"}
+            UserData:
+                Fn::Base64:
+                    Fn::Replace:
+                      - _project_name_: {Ref: ProjectName}
+                        _installer_account_password_: {Ref: TemporaryInstallerPassword}
+                        _base_domain_: {Ref: BaseDomain}
+                        _hadoop_master_name_: {Ref: MasterNodeName}
+                        _hadoop_auxiliary_name_: {Ref: AuxiliaryNodeName}
+                        _hadoop_slave_name_: {Ref: SlaveNodeName}
+                      - |
+                        #!/bin/bash -v
+                        apt-get update; apt-get upgrade
+                        updatedb
+                        cd /tmp
+                        wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/install_java.sh
+                        chmod u+x install_java.sh
+                        wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/bind_hadoop_directories.sh
+                        chmod u+x bind_hadoop_directories.sh
+                        wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/install_common.sh
+                        chmod u+x install_common.sh
+                        wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/configure_common.sh
+                        chmod u+x configure_common.sh
+                        wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/configure_hdfs.sh
+                        chmod u+x configure_hdfs.sh
+                        wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/install_slave_node.sh
+                        chmod u+x install_slave_node.sh
+                        wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/configure_slave.sh
+                        chmod u+x configure_slave.sh
+                        wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/configure_MRv1.sh
+                        chmod u+x configure_MRv1.sh
+                        wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/start_hdfs_slave.sh
+                        chmod u+x start_hdfs_slave.sh
+                        
+                        export project_name=_project_name_
+                        export installer_account_username="installer"
+                        export installer_account_password=_installer_account_password_
+                        
+                        export hadoop_master_name=_hadoop_master_name_
+                        export hadoop_master_domain=_hadoop_master_name_._base_domain_
+                        
+                        export hadoop_auxiliary_name=_hadoop_auxiliary_name_
+                        export hadoop_auxiliary_domain=_hadoop_auxiliary_name_._base_domain_
+
+                        export hadoop_slave_ip=`wget -qO -  http://169.254.169.254/latest/meta-data/local-ipv4`
+
+                        export hadoop_node_ip=$hadoop_slave_ip
+                        export hadoop_node_hostname=`hostname`
+                       
+                        ./install_common.sh
+                        ./install_slave_node.sh
+                        ./configure_common.sh
+                        ./configure_hdfs.sh
+                        ./configure_slave.sh
+                        ./configure_MRv1.sh
+                        
+                        useradd -m -s /bin/bash $installer_account_username
+                        echo "$installer_account_username:$installer_account_password" | chpasswd
+                        inoticoming /home/installer --prefix host bash -c 'cat /home/installer/host_list >> /etc/hosts' \;
+                        inoticoming /home/installer --prefix slaves mv -f /home/installer/slaves /etc/hadoop/conf._project_name_ \;
+                        inoticoming /home/installer --prefix zoo.cfg mv -f /home/installer/zoo.cfg /etc/zookeeper/conf.dist/zoo.cfg \;
+                        inoticoming /home/installer --prefix finaliser /tmp/start_hdfs_slave.sh \;
+                        # Find this in /tmp
+                        touch "installation_finished"
+                        
     HadoopAuxiliary: 
         Type: "AWS::EC2::Instance"
         Properties: 
@@ -211,9 +287,9 @@ Resources:
             InstanceType: {Ref: InstanceType}
             AvailabilityZone: {Ref: AvailabilityZone}
             SecurityGroups: 
-                - {Ref: DefaultSecurityGroup}
-                - {Ref: MemberSecurityGroup}
-                - {Ref: ClusterSecurityGroup}
+                - {Ref: "DefaultSecurityGroup"}
+                - {Ref: "MemberSecurityGroup"}
+                - {Ref: "ClusterSecurityGroup"}
             UserData:
                 Fn::Base64:
                     Fn::Replace:
@@ -283,10 +359,10 @@ Resources:
             InstanceType: {Ref: InstanceType}
             AvailabilityZone: {Ref: AvailabilityZone}
             SecurityGroups: 
-                - {Ref: DefaultSecurityGroup}
-                - {Ref: MemberSecurityGroup}
-                - {Ref: ClusterSecurityGroup}
-                - {Ref: WebManagementSecurityGroup}
+                - {Ref: "DefaultSecurityGroup"}
+                - {Ref: "MemberSecurityGroup"}
+                - {Ref: "ClusterSecurityGroup"}
+                - {Ref: "WebManagementSecurityGroup"}
             UserData:
                 Fn::Base64:
                     Fn::Replace:
@@ -295,6 +371,14 @@ Resources:
                         _base_domain_: {Ref: BaseDomain}
                         _hadoop_master_name_: {Ref: MasterNodeName}
                         _hadoop_auxiliary_name_: {Ref: AuxiliaryNodeName}
+                        _hadoop_slave_ip_:
+                            Fn::GetAtt: 
+                                - "HadoopSlave"
+                                - "PublicIp"
+                        _hadoop_slave_hostname_:
+                            Fn::GetAtt: 
+                                - "HadoopSlave"
+                                - "PublicDnsName"
                         _hadoop_auxiliary_ip_:
                             Fn::GetAtt: 
                                 - "HadoopAuxiliary"
@@ -346,6 +430,9 @@ Resources:
                         export hadoop_auxiliary_name=_hadoop_auxiliary_name_
                         export hadoop_auxiliary_domain=_hadoop_auxiliary_name_._base_domain_
                         
+                        export hadoop_slave_name_0=_hadoop_slave_name_
+                        export hadoop_slave_domain_0=_hadoop_slave_name_._base_domain_
+                        
                         export hadoop_base_domain=_base_domain_
                         export hadoop_master_ip=`wget -qO -  http://169.254.169.254/latest/meta-data/local-ipv4`
                        
@@ -355,6 +442,9 @@ Resources:
                         
                         export hadoop_auxiliary_hostname=_hadoop_auxiliary_hostname_
                         export hadoop_auxiliary_ip=_hadoop_auxiliary_ip_
+                        
+                        export hadoop_slave_hostname=_hadoop_slave_hostname_
+                        export hadoop_slave_ip=_hadoop_slave_ip_
                         
                         export hadoop_node_ip=$hadoop_master_ip
                         export hadoop_node_hostname=`hostname`

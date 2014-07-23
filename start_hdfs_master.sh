@@ -30,4 +30,6 @@ echo "Startup the HDFS file system."
 
 # Format the hdfs file system as the hdfs user.
 # ON the master only is OK.
+service hadoop-hdfs-namenode start
 sudo -u hdfs hadoop namenode -format
+service hadoop-0.20-mapreduce-jobtracker start
