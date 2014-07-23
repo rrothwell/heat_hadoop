@@ -29,47 +29,6 @@ password=$installer_account_password
 let expected_vm_count=hadoop_slave_count+1
 echo "Expected VM count: $expected_vm_count"
 
-# Set up DNS in /etc/hosts on master/auxiliary/slaves.
-# This adds more entries to what is already set up on an instance by instance basis.
-
-extra_hosts="\n\n# Hadoop Cluster Group\n\
-\n$hadoop_master_ip\t$hadoop_master_domain\t$hadoop_master_name\
-\n$hadoop_auxiliary_ip\t$hadoop_auxiliary_domain\t$hadoop_auxiliary_name\
-\n$hadoop_slave_ip\t$hadoop_slave_domain_0\t$hadoop_slave_name_0"
-
-slave_index=0
-IFS=","
-for slave_node_ip in $hadoop_slave_list; do
-	actual_slave_name="${hadoop_slave_name}-${slave_index}"
-    hadoop_slave_domain="${actual_slave_name}.${hadoop_base_domain}"
-	extra_hosts+="\n$slave_node_ip\t$hadoop_slave_domain\t$actual_slave_name"
-	let slave_index=slave_index+1
-done
-
-echo "About to transfer extra hosts to /etc/hosts on master $hadoop_master_ip.\n"
-echo -e $extra_hosts >> /etc/hosts;
-
-echo "About to transfer extra hosts to /etc/hosts on auxiliary $hadoop_auxiliary_ip.\n"
-sshpass -p $password ssh -o StrictHostKeyChecking=no $user\@$hadoop_auxiliary_ip 'bash -s' <<ENDSSH
-	touch ~/host_list
-	echo -e "$extra_hosts" >> ~/host_list;
-ENDSSH
-
-echo "About to transfer extra hosts to /etc/hosts on slave $hadoop_slave_ip.\n"
-sshpass -p $password ssh -o StrictHostKeyChecking=no $user\@$hadoop_slave_ip 'bash -s' <<ENDSSH
-	touch ~/host_list
-	echo -e "$extra_hosts" >> ~/host_list;
-ENDSSH
-
-IFS=","
-for slave_node_ip in $hadoop_slave_list; do
-	echo "About to transfer extra hosts to /etc/hosts on slave $slave_node_ip.\n"
-	sshpass -p $password ssh -o StrictHostKeyChecking=no $user\@$slave_node_ip 'bash -s' <<ENDSSH
-		touch ~/host_list
-		echo -e "$extra_hosts" >> ~/host_list;
-ENDSSH
-done
-
 # Setup for timeout.
 
 current_time_secs=`date +%s`
@@ -135,7 +94,57 @@ fi
 
 # All VM's are good, so complete the installation
 
+# Distribute the /etc/hosts file.
+
+# Set up DNS in /etc/hosts on master/auxiliary/slaves.
+# This adds more entries to what is already set up on an instance by instance basis.
+
+extra_hosts="\n\n# Hadoop Cluster Group\n\
+\n$hadoop_master_ip\t$hadoop_master_domain\t$hadoop_master_name\
+\n$hadoop_auxiliary_ip\t$hadoop_auxiliary_domain\t$hadoop_auxiliary_name\
+\n$hadoop_slave_ip\t$hadoop_slave_domain_0\t$hadoop_slave_name_0"
+
+slave_index=0
+IFS=","
+for slave_node_ip in $hadoop_slave_list; do
+	actual_slave_name="${hadoop_slave_name}-${slave_index}"
+    hadoop_slave_domain="${actual_slave_name}.${hadoop_base_domain}"
+	extra_hosts+="\n$slave_node_ip\t$hadoop_slave_domain\t$actual_slave_name"
+	let slave_index=slave_index+1
+done
+
+echo "About to transfer extra hosts to /etc/hosts on master $hadoop_master_ip.\n"
+echo -e $extra_hosts >> /etc/hosts;
+
+echo "About to transfer extra hosts to /etc/hosts on auxiliary $hadoop_auxiliary_ip.\n"
+sshpass -p $password ssh -o StrictHostKeyChecking=no $user\@$hadoop_auxiliary_ip 'bash -s' <<ENDSSH
+	touch ~/host_list
+	echo -e "$extra_hosts" >> ~/host_list;
+ENDSSH
+
+echo "About to transfer extra hosts to /etc/hosts on slave $hadoop_slave_ip.\n"
+sshpass -p $password ssh -o StrictHostKeyChecking=no $user\@$hadoop_slave_ip 'bash -s' <<ENDSSH
+	touch ~/host_list
+	echo -e "$extra_hosts" >> ~/host_list;
+ENDSSH
+
+sshpass -p 0^3Dfxx ssh -o StrictHostKeyChecking=no installer@130.220.208.118 'bash -s' <<ENDSSH
+	touch ~/host_list
+	echo -e "$extra_hosts" >> ~/host_list;
+ENDSSH
+
+
+IFS=","
+for slave_node_ip in $hadoop_slave_list; do
+	echo "About to transfer extra hosts to /etc/hosts on slave $slave_node_ip.\n"
+	sshpass -p $password ssh -o StrictHostKeyChecking=no $user\@$slave_node_ip 'bash -s' <<ENDSSH
+		touch ~/host_list
+		echo -e "$extra_hosts" >> ~/host_list;
+ENDSSH
+done
+
 # Distribute the slaves file.
+
 slave_file="/etc/hadoop/conf.$project_name/slaves"
 sshpass -p $password scp -o StrictHostKeyChecking=no $slave_file $user\@$hadoop_auxiliary_ip:~
 sshpass -p $password scp -o StrictHostKeyChecking=no $slave_file $user\@$hadoop_slave_ip:~
@@ -147,6 +156,7 @@ for slave_node_ip in $hadoop_slave_list; do
 done
 
 # Distribute the ZooKeeper configuration file.
+
 zoo_file="/etc/zookeeper/conf.dist/zoo.cfg"
 sshpass -p $password scp -o StrictHostKeyChecking=no $zoo_file $user\@$hadoop_auxiliary_ip:~
 sshpass -p $password scp -o StrictHostKeyChecking=no $zoo_file $user\@$hadoop_slave_ip:~
