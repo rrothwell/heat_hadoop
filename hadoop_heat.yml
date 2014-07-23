@@ -107,7 +107,7 @@ Resources:
         Properties:
             GroupDescription: Cluster commmunications allowed only from other cluster members.
             SecurityGroupIngress:
-                - {IpProtocol: tcp, FromPort: '1', ToPort: '65535', SourceSecurityGroupName: {"Ref": "MemberSecurityGroup"}}
+                - {IpProtocol: tcp, FromPort: '1', ToPort: '65535', SourceSecurityGroupId: {Ref: MemberSecurityGroup}}
     WebManagementSecurityGroup:
         Type: AWS::EC2::SecurityGroup
         Properties:
