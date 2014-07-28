@@ -32,5 +32,7 @@ if ! jps | grep -q DataNode ; then
 fi
 DELIMITER
 
-chown -R hadoop:hadoop /etc/hadoop/conf.$project_name/health_check.sh
+# TODO RR: check correct user for this script.
+#chown -R hadoop:hadoop /etc/hadoop/conf.$project_name/health_check.sh
+
 chmod ugo+x /etc/hadoop/conf.$project_name/health_check.sh
