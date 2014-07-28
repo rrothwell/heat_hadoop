@@ -340,7 +340,7 @@ Resources:
                         echo "$installer_account_username:$installer_account_password" | chpasswd
                         inoticoming /home/installer --prefix host bash -c 'cat /home/installer/host_list >> /etc/hosts' \;
                         inoticoming /home/installer --prefix slaves mv -f /home/installer/slaves /etc/hadoop/conf._project_name_ \;
-                        inoticoming /home/installer --prefix zoo.cfg mv -f /home/installer/zoo.cfg /etc/zookeeper/conf.dist/zoo.cfg \;
+                        inoticoming /home/installer --prefix zoo.cfg mv -f /home/installer/zoo.cfg /etc/zookeeper/conf.dist/zoo.cfg  \;
                         inoticoming /home/installer --prefix finaliser /tmp/start_hdfs_auxiliary.sh \;
                         # Find this in /tmp
                         touch "installation_finished"
