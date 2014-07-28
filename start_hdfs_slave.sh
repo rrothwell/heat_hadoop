@@ -22,6 +22,14 @@
 # Adjust configuration of remote VM's and then starts the services
 # ===========================================
 
+echo "Startup ZoopKeeper"
+
+touch /var/log/zookeeper/zookeeper.out
+chown zookeeper:zookeeper /var/log/zookeeper/zookeeper.out
+
+sudo service zookeeper-server init --myid=`cat /home/installer/finaliser` --force
+sudo service zookeeper-server start
+
 service hadoop-hdfs-datanode start
 service hadoop-0.20-mapreduce-tasktracker start
 

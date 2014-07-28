@@ -22,6 +22,16 @@
 # Adjust configuration of remote VM's and then starts the services
 # ===========================================
 
+echo "Startup ZoopKeeper"
+
+touch /var/log/zookeeper/zookeeper.out
+chown zookeeper:zookeeper /var/log/zookeeper/zookeeper.out
+
+sudo service zookeeper-server init --myid=`cat /home/installer/finaliser` --force
+sudo service zookeeper-server start
+
+echo "Startup HDFS"
+
 #update-rc.d hadoop-hdfs-secondarynamenode defaults
 service hadoop-hdfs-secondarynamenode start
 

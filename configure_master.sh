@@ -60,13 +60,18 @@ DELIMITER
 #server.3=slave2unicarbkb.doesntexist.org:2888:3888
 #server.4=slave3unicarbkb.doesntexist.org:2888:3888
 
-COUNTER=0
-counter1=$((COUNTER+1))
-echo "server.$counter1=$hadoop_slave_name.$hadoop_base_domain:2888:3888" >> /etc/zookeeper/conf.dist/zoo.cfg
-COUNTER=$((COUNTER+1))
+ENSEMBLE_ID=1
+echo "server.$ENSEMBLE_ID=$hadoop_master_name.$hadoop_base_domain:2888:3888" >> /etc/zookeeper/conf.dist/zoo.cfg
+ENSEMBLE_ID=$((ENSEMBLE_ID+1))
+echo "server.$ENSEMBLE_ID=$hadoop_auxiliary_name.$hadoop_base_domain:2888:3888" >> /etc/zookeeper/conf.dist/zoo.cfg
+ENSEMBLE_ID=$((ENSEMBLE_ID+1))
+echo "server.$ENSEMBLE_ID=$hadoop_slave_name.$hadoop_base_domain:2888:3888" >> /etc/zookeeper/conf.dist/zoo.cfg
+ENSEMBLE_ID=$((ENSEMBLE_ID+1))
+SLAVE_INDEX=0
 IFS=","
 for slave in $hadoop_slave_list; do
-	counter1=$((COUNTER+1))
-    echo "server.$counter1=$hadoop_slave_name-$COUNTER.$hadoop_base_domain:2888:3888" >> /etc/zookeeper/conf.dist/zoo.cfg
-    COUNTER=$((COUNTER+1))
+    echo "server.$ENSEMBLE_ID=$hadoop_slave_name-$SLAVE_INDEX.$hadoop_base_domain:2888:3888" >> /etc/zookeeper/conf.dist/zoo.cfg
+	ENSEMBLE_ID=$((ENSEMBLE_ID+1))
+    SLAVE_INDEX=$((SLAVE_INDEX+1))
 done
+

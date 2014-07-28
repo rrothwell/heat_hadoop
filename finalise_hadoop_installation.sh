@@ -167,36 +167,55 @@ for slave_node_ip in $hadoop_slave_list; do
 	let slave_index=slave_index+1
 done
 
+# Start up the zookeeper server on master.
 
+ENSEMBLE_ID=1
+
+touch /var/log/zookeeper/zookeeper.out
+chown zookeeper:zookeeper /var/log/zookeeper/zookeeper.out
+
+service zookeeper-server init --myid=$ENSEMBLE_ID --force
+service zookeeper-server start
+
+# Trigger the start scripts running as root on each cluster node.
+# A dummy file is created so inotify then runs the start script.
+
+ENSEMBLE_ID=$((ENSEMBLE_ID+1))
 echo "About to trigger finalise on auxiliary $hadoop_auxiliary_ip.\n"
 sshpass -p $password ssh -o StrictHostKeyChecking=no $user\@$hadoop_auxiliary_ip 'bash -s' <<ENDSSH
 	touch ~/finaliser
+	echo $ENSEMBLE_ID  > ~/finaliser
 ENDSSH
 
+ENSEMBLE_ID=$((ENSEMBLE_ID+1))
 echo "About to trigger finalise on slave $hadoop_slave_ip.\n"
 sshpass -p $password ssh -o StrictHostKeyChecking=no $user\@$hadoop_slave_ip 'bash -s' <<ENDSSH
 	touch ~/finaliser
+	echo $ENSEMBLE_ID  > ~/finaliser
 ENDSSH
 
+ENSEMBLE_ID=$((ENSEMBLE_ID+1))
 IFS=","
 for slave_node_ip in $hadoop_slave_list; do
 	echo "About to trigger finalise on slave $slave_node_ip.\n"
 	sshpass -p $password ssh -o StrictHostKeyChecking=no $user\@$slave_node_ip 'bash -s' <<ENDSSH
 	touch ~/finaliser
+	echo $ENSEMBLE_ID  > ~/finaliser
 ENDSSH
+	ENSEMBLE_ID=$((ENSEMBLE_ID+1))
 done
 
 exit 0
 
 # Example command line for testing:
-export project_name=unicarbkb;\
-export installer_account_username=installer;\
-export installer_account_password=0^3Dfxx;\
-export hadoop_slave_count=2;\
-export hadoop_auxiliary_ip=130.220.208.147;\
-export hadoop_slave_ip=130.220.208.118;\
-export hadoop_slave_list=130.56.250.128,130.56.250.196;\
-~/test.sh
+#export project_name=unicarbkb;\
+#export installer_account_username=installer;\
+#export installer_account_password=0^3Dfxx;\
+#export hadoop_slave_count=2;\
+#export hadoop_auxiliary_ip=130.220.208.147;\
+#export hadoop_slave_ip=130.220.208.118;\
+#export hadoop_slave_list=130.56.250.128,130.56.250.196;\
+#~/test.sh
 
 
 

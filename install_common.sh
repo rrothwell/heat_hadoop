@@ -48,10 +48,13 @@ dpkg -i cdh4-repository_1.0_all.deb
 wget -qO - http://archive.cloudera.com/cdh4/ubuntu/precise/amd64/cdh/archive.key | apt-key add -
 apt-get update
 
-#apt-get install zookeeper zookeeper-server
-#zookeeper-server init --myid=1 # --force
-#service zookeeper-server start
-#vi /etc/zookeeper/conf.dist/zoo.cfg
+apt-get install zookeeper zookeeper-server
+# See configuration of zoo.cfg in configure_master.sh
+# and startup in finalise_hadoop_installation.sh triggering:
+# start_hdfs_master.sh
+# start_hdfs_auxiliary.sh
+# start_hdfs_slave.sh
+
 
 # We use this to move files into position 
 # after they are transferred to the installer directory by the master.
