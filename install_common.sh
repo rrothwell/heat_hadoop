@@ -55,13 +55,13 @@ apt-get update
 # start_hdfs_auxiliary.sh
 # start_hdfs_slave.sh
 
-apt-get install zookeeper zookeeper-server
+echo "Installing zookeeper-server"
 
-
+apt-get -y install zookeeper-server
 
 # We use this to move files into position 
 # after they are transferred to the installer directory by the master.
-apt-get install  inoticoming
+apt-get -y install  inoticoming
 
 
 
