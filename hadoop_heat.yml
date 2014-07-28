@@ -60,7 +60,7 @@ Parameters:
     AvailabilityZone: 
         Description: "Physical location of the running cluster. "
         Type: String
-        Default: "sa"
+        Default: "NCI"
         AllowedValues:
             - NCI
             - melbourne
@@ -107,7 +107,7 @@ Resources:
         Properties:
             GroupDescription: Cluster commmunications allowed only from other cluster members.
             SecurityGroupIngress:
-                - {IpProtocol: tcp, FromPort: '1', ToPort: '65535', SourceSecurityGroupId: {Ref: MemberSecurityGroup}}
+                - {IpProtocol: tcp, FromPort: '1', ToPort: '65535', SourceSecurityGroupName: {Ref: MemberSecurityGroup}}
     WebManagementSecurityGroup:
         Type: AWS::EC2::SecurityGroup
         Properties:
@@ -119,6 +119,7 @@ Resources:
                 - {IpProtocol: tcp, FromPort: '50075', ToPort: '50075', CidrIp: 0.0.0.0/0}
                 - {IpProtocol: tcp, FromPort: '50090', ToPort: '50090', CidrIp: 0.0.0.0/0}
                 - {IpProtocol: tcp, FromPort: '60010', ToPort: '60010', CidrIp: 0.0.0.0/0}
+                - {IpProtocol: tcp, FromPort: '50470', ToPort: '50740', CidrIp: 0.0.0.0/0}
     HadoopSlaveGroup:
         Type: "OS::Heat::InstanceGroup"
         Properties:
@@ -134,10 +135,7 @@ Resources:
             #ImageId: {Fn::FindInMap: [InstanceId, {Ref: ImageName}, ImageId]}
             ImageId:  {Ref: ImageId}
             InstanceType: {Ref: InstanceType}
-            SecurityGroups: 
-                - {Ref: "MemberSecurityGroup"}
-                - {Ref: "ClusterSecurityGroup"}
-                - {Ref: "DefaultSecurityGroup"}
+            SecurityGroups: [{Ref: "MemberSecurityGroup"}, {Ref: "ClusterSecurityGroup"}, {Ref: "DefaultSecurityGroup"}]
             UserData:
                 Fn::Base64:
                     Fn::Replace:
@@ -359,10 +357,9 @@ Resources:
             InstanceType: {Ref: InstanceType}
             AvailabilityZone: {Ref: AvailabilityZone}
             SecurityGroups: 
-                - {Ref: "DefaultSecurityGroup"}
                 - {Ref: "MemberSecurityGroup"}
                 - {Ref: "ClusterSecurityGroup"}
-                - {Ref: "WebManagementSecurityGroup"}
+                - {Ref: "DefaultSecurityGroup"}
             UserData:
                 Fn::Base64:
                     Fn::Replace:
