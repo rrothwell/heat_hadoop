@@ -128,12 +128,6 @@ sshpass -p $password ssh -o StrictHostKeyChecking=no $user\@$hadoop_slave_ip 'ba
 	echo -e "$extra_hosts" >> ~/host_list;
 ENDSSH
 
-sshpass -p 0^3Dfxx ssh -o StrictHostKeyChecking=no installer@130.220.208.118 'bash -s' <<ENDSSH
-	touch ~/host_list
-	echo -e "$extra_hosts" >> ~/host_list;
-ENDSSH
-
-
 IFS=","
 for slave_node_ip in $hadoop_slave_list; do
 	echo "About to transfer extra hosts to /etc/hosts on slave $slave_node_ip.\n"
@@ -173,8 +167,6 @@ ENSEMBLE_ID=1
 
 chown :zookeeper /var/log/zookeeper
 chmod g+w /var/log/zookeeper
-#touch /var/log/zookeeper/zookeeper.out
-#chown zookeeper:zookeeper /var/log/zookeeper/zookeeper.out
 
 service zookeeper-server init --myid=$ENSEMBLE_ID --force
 service zookeeper-server start

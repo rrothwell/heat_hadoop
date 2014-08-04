@@ -26,8 +26,6 @@ echo "Startup ZoopKeeper"
 
 chown :zookeeper /var/log/zookeeper
 chmod g+w /var/log/zookeeper
-#touch /var/log/zookeeper/zookeeper.out
-#chown zookeeper:zookeeper /var/log/zookeeper/zookeeper.out
 
 sudo service zookeeper-server init --myid=`cat /home/installer/finaliser` --force
 sudo service zookeeper-server start
