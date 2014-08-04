@@ -171,8 +171,10 @@ done
 
 ENSEMBLE_ID=1
 
-touch /var/log/zookeeper/zookeeper.out
-chown zookeeper:zookeeper /var/log/zookeeper/zookeeper.out
+chown :zookeeper /var/log/zookeeper
+chmod g+w /var/log/zookeeper
+#touch /var/log/zookeeper/zookeeper.out
+#chown zookeeper:zookeeper /var/log/zookeeper/zookeeper.out
 
 service zookeeper-server init --myid=$ENSEMBLE_ID --force
 service zookeeper-server start
