@@ -416,6 +416,8 @@ Resources:
                         chmod u+x configure_MRv1.sh
                         wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/finalise_hadoop_installation.sh
                         chmod u+x finalise_hadoop_installation.sh
+                        wget https://raw.githubusercontent.com/rrothwell/heat_hadoop/master/prep_map_reduce.sh
+                        chmod u+x prep_map_reduce.sh
                         
                         export project_name=_project_name_
                         export installer_account_username="installer"
@@ -454,6 +456,7 @@ Resources:
                         ./configure_MRv1.sh
                         ./finalise_hadoop_installation.sh
                         ./start_hdfs_master.sh
+                        ./prep_map_reduce.sh
 #Outputs: 
 #    MasterNodeIp: 
 #        Description: "Login via ssh using this command: "
