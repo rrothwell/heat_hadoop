@@ -40,6 +40,8 @@ cat <<DELIMITER > /etc/hadoop/conf.$project_name/hdfs-site.xml
 <?xml version="1.0"?>
 <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
 <configuration>
+	<!-- TODO RR: dfs.name.dir and dfs.namenode.name.dir (below) are supposed to be the same. -->
+	<!-- Should this property be removed ? -->
     <property>
         <name>dfs.name.dir</name>
         <value>/var/lib/hadoop-hdfs/cache/hdfs/dfs/name</value>
@@ -48,6 +50,7 @@ cat <<DELIMITER > /etc/hadoop/conf.$project_name/hdfs-site.xml
         <name>dfs.permissions.superusergroup</name>
         <value>hadoop</value>
     </property>
+	<!-- TODO RR: Should we configure an NFS mount? -->
     <property>
         <name>dfs.namenode.name.dir</name>
         <value>file:///data/1/dfs/nn,file:///nfsmount/dfs/nn</value>
