@@ -60,6 +60,10 @@ DELIMITER
 #server.3=slave2unicarbkb.doesntexist.org:2888:3888
 #server.4=slave3unicarbkb.doesntexist.org:2888:3888
 
+# Use:
+#$echo stat | nc 127.0.0.1 2181 
+# and check the node count to verify that there is a Quorum.
+
 ENSEMBLE_ID=1
 echo "server.$ENSEMBLE_ID=$hadoop_master_name.$hadoop_base_domain:2888:3888" >> /etc/zookeeper/conf.dist/zoo.cfg
 ENSEMBLE_ID=$((ENSEMBLE_ID+1))
