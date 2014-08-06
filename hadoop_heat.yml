@@ -359,6 +359,7 @@ Resources:
             SecurityGroups: 
                 - {Ref: "MemberSecurityGroup"}
                 - {Ref: "ClusterSecurityGroup"}
+                - {Ref: "WebManagementSecurityGroup"}
                 - {Ref: "DefaultSecurityGroup"}
             UserData:
                 Fn::Base64:
