@@ -119,10 +119,10 @@ sudo -u joebloggs hadoop fs -chmod ugo+w /user/joebloggs/test_output
 # Now run the job. Do this by hand.
 # -------------------------------------------
 
-sudo  -u joebloggs hadoop jar /usr/lib/hadoop-0.20-mapreduce/hadoop-examples.jar wordcount /user/joebloggs/map_reduce-test-data /user/joebloggs/test_output/gutenberg-output
-sudo -u hdfs hadoop fs -ls -R /
-sudo -u hdfs hadoop fs -cat /user/joebloggs/test_output/gutenberg-output/part-r-00000
-sudo -u joebloggs hadoop fs -rm -R /user/joebloggs/test_output/gutenberg-output
+#sudo  -u joebloggs hadoop jar /usr/lib/hadoop-0.20-mapreduce/hadoop-examples.jar wordcount /user/joebloggs/map_reduce-test-data /user/joebloggs/test_output/gutenberg-output
+#sudo -u hdfs hadoop fs -ls -R /
+#sudo -u hdfs hadoop fs -cat /user/joebloggs/test_output/gutenberg-output/part-r-00000
+#sudo -u joebloggs hadoop fs -rm -R /user/joebloggs/test_output/gutenberg-output
 
 
 
