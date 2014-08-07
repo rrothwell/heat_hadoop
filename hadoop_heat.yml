@@ -135,7 +135,7 @@ Resources:
             #ImageId: {Fn::FindInMap: [InstanceId, {Ref: ImageName}, ImageId]}
             ImageId:  {Ref: ImageId}
             InstanceType: {Ref: InstanceType}
-            SecurityGroups: [{Ref: "MemberSecurityGroup"}, {Ref: "ClusterSecurityGroup"}, {Ref: "DefaultSecurityGroup"}]
+            SecurityGroups: [{Ref: "MemberSecurityGroup"}, {Ref: "ClusterSecurityGroup"}, {Ref: "WebManagementSecurityGroup"}, {Ref: "DefaultSecurityGroup"}]
             UserData:
                 Fn::Base64:
                     Fn::Replace:
@@ -198,6 +198,7 @@ Resources:
                         inoticoming /home/installer --prefix slaves mv -f /home/installer/slaves /etc/hadoop/conf._project_name_ \;
                         inoticoming /home/installer --prefix zoo.cfg mv -f /home/installer/zoo.cfg /etc/zookeeper/conf.dist/zoo.cfg \;
                         inoticoming /home/installer --prefix finaliser /tmp/start_hdfs_slave.sh \;
+                        inoticoming /home/installer --prefix mapred_start service hadoop-0.20-mapreduce-tasktracker start \;
                         # Find this in /tmp
                         touch "installation_finished"
     HadoopSlave: 
@@ -209,9 +210,10 @@ Resources:
             InstanceType: {Ref: InstanceType}
             AvailabilityZone: {Ref: AvailabilityZone}
             SecurityGroups: 
-                - {Ref: "DefaultSecurityGroup"}
                 - {Ref: "MemberSecurityGroup"}
                 - {Ref: "ClusterSecurityGroup"}
+                - {Ref: "WebManagementSecurityGroup"}
+                - {Ref: "DefaultSecurityGroup"}
             UserData:
                 Fn::Base64:
                     Fn::Replace:
@@ -273,6 +275,7 @@ Resources:
                         inoticoming /home/installer --prefix slaves mv -f /home/installer/slaves /etc/hadoop/conf._project_name_ \;
                         inoticoming /home/installer --prefix zoo.cfg mv -f /home/installer/zoo.cfg /etc/zookeeper/conf.dist/zoo.cfg \;
                         inoticoming /home/installer --prefix finaliser /tmp/start_hdfs_slave.sh \;
+                        inoticoming /home/installer --prefix mapred_start service hadoop-0.20-mapreduce-tasktracker start \;
                         # Find this in /tmp
                         touch "installation_finished"
                         
@@ -285,9 +288,10 @@ Resources:
             InstanceType: {Ref: InstanceType}
             AvailabilityZone: {Ref: AvailabilityZone}
             SecurityGroups: 
-                - {Ref: "DefaultSecurityGroup"}
                 - {Ref: "MemberSecurityGroup"}
                 - {Ref: "ClusterSecurityGroup"}
+                - {Ref: "WebManagementSecurityGroup"}
+                - {Ref: "DefaultSecurityGroup"}
             UserData:
                 Fn::Base64:
                     Fn::Replace:

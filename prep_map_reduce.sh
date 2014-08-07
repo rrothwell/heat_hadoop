@@ -51,7 +51,22 @@ sudo -u hdfs hadoop fs -chown mapred:hadoop /tmp/mapred/system
 # Start the map reduce system.
 # -------------------------------------------
 
+# Start JobTracker before TaskTracker.
 service hadoop-0.20-mapreduce-jobtracker start
+
+echo "About to start task tracker on slave $hadoop_slave_ip.\n"
+sshpass -p $password ssh -o StrictHostKeyChecking=no $user\@$hadoop_slave_ip 'bash -s' <<ENDSSH
+	touch ~/mapred_start
+ENDSSH
+
+IFS=","
+for slave_node_ip in $hadoop_slave_list; do
+	echo "About to start task tracker on slave $slave_node_ip.\n"
+	sshpass -p $password ssh -o StrictHostKeyChecking=no $user\@$slave_node_ip 'bash -s' <<ENDSSH
+	touch ~/mapred_start
+ENDSSH
+done
+
 
 # -------------------------------------------
 # Now test the installation.
@@ -87,7 +102,8 @@ wget http://www.gutenberg.org/cache/epub/1661/pg1661.txt; \
 wget http://www.gutenberg.org/cache/epub/972/pg972.txt; \
 wget http://www.gutenberg.org/cache/epub/19699/pg19699.txt
 cd ~
-chown joebloggs:hadoop map_reduce-test-data
+cp -R map_reduce-test-data /home/joebloggs
+chown -R joebloggs:hadoop /home/joebloggs/map_reduce-test-data
 sudo -u joebloggs hadoop fs -copyFromLocal /home/joebloggs/map_reduce-test-data /user/joebloggs
 
 #sudo -u hdfs hadoop fs -ls -R /
@@ -98,6 +114,17 @@ sudo -u joebloggs hadoop fs -copyFromLocal /home/joebloggs/map_reduce-test-data 
 
 sudo -u joebloggs hadoop fs -mkdir -p /user/joebloggs/test_output
 sudo -u joebloggs hadoop fs -chmod ugo+w /user/joebloggs/test_output
+
+# -------------------------------------------
+# Now run the job. Do this by hand.
+# -------------------------------------------
+
+sudo  -u joebloggs hadoop jar /usr/lib/hadoop-0.20-mapreduce/hadoop-examples.jar wordcount /user/joebloggs/map_reduce-test-data /user/joebloggs/test_output/gutenberg-output
+sudo -u hdfs hadoop fs -ls -R /
+sudo -u hdfs hadoop fs -cat /user/joebloggs/test_output/gutenberg-output/part-r-00000
+sudo -u joebloggs hadoop fs -rm -R /user/joebloggs/test_output/gutenberg-output
+
+
 
 
 

@@ -31,6 +31,5 @@ sudo service zookeeper-server init --myid=`cat /home/installer/finaliser` --forc
 sudo service zookeeper-server start
 
 service hadoop-hdfs-datanode start
-service hadoop-0.20-mapreduce-tasktracker start
 
 
