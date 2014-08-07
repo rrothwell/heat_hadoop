@@ -25,6 +25,10 @@
 
 echo "Final prep and test of the map reduce system."
 
+# Remote account details.
+user=$installer_account_username
+password=$installer_account_password
+
 # -------------------------------------------
 # Create the HDFS /tmp Directory
 # -------------------------------------------
