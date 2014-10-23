@@ -31,8 +31,7 @@ Parameters:
         Type: "String"
         Default: "richardr_on_nectar"
     SlaveCount:
-        # Type needs to be a string since Fn::Replace barfs on numbers.
-        Type: "String"
+        Type: "Number"
         Default: "2"
         MinValue: "1"
         MaxValue: "100"
