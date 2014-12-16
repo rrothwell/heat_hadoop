@@ -31,8 +31,7 @@ Parameters:
         Type: "String"
         Default: "richardr_on_nectar"
     SlaveCount:
-        # Type needs to be a string since Fn::Replace barfs on numbers.
-        Type: "String"
+        Type: "Number"
         Default: "2"
         MinValue: "1"
         MaxValue: "100"
@@ -462,55 +461,55 @@ Resources:
                         ./finalise_hadoop_installation.sh
                         ./start_hdfs_master.sh
                         ./prep_map_reduce.sh
-#Outputs: 
-#    MasterNodeIp: 
-#        Description: "Login via ssh using this command: "
-#        Value: 
-#            Fn::Join: 
-#                - ""
-#                - 
-#                    - "ssh -i /path/to/private/key/file.pem root@"
-#                    - 
-#                        Fn::GetAtt: 
-#                            - "HadoopMaster"
-#                            - "PublicIp"
-#    AuxiliaryNodeIp: 
-#        Description: "Login via ssh using this command: "
-#        Value: 
-#            Fn::Join: 
-#                - ""
-#                - 
-#                    - "ssh -i /path/to/private/key/file.pem root@"
-#                    - 
-#                        Fn::GetAtt: 
-#                            - "HadoopAuxiliary"
-#                            - "PublicIp"
-###    DynDNSMasterNodeDomainName: 
-#        Description: "Enter this value for the domain name of the master node into the DynDNS account: "
-#        Value: 
-#            Fn::Join: 
-#                - ""
-#                - 
-#                    - {Ref: MasterNodeName}
-#                    - "."
-#                    - {Ref: BaseDomain}
-#                    - ": "
-#                    - 
-#                        Fn::GetAtt: 
-#                            - "HadoopMaster"
-#                            - "PublicIp"
-#    DynDNSAuxilaryNodeDomainName: 
-#        Description: "Enter this value for the domain name of the auxiliary node into the DynDNS account: "
-#        Value: 
-#            Fn::Join: 
-#                - ""
-#                - 
-#                    - {Ref: AuxiliaryNodeName}
-#                    - "."
-#                    - {Ref: BaseDomain}
-#                    - ": "
-#                    - 
-#                        Fn::GetAtt: 
-#                            - "HadoopAuxiliary"
-#                            - "PublicIp"
-#
+
+Outputs:
+    MasterNodeIp:
+        Description: "Login via ssh using a command along these lines: "
+        Value:
+            Fn::Join:
+                - ""
+                -
+                    - "ssh -i /path/to/private/key/file.pem root@"
+                    -
+                        Fn::GetAtt:
+                            - "HadoopMaster"
+                            - "PublicIp"
+    AuxiliaryNodeIp:
+        Description: "Login via ssh using this command: "
+        Value:
+            Fn::Join:
+                - ""
+                -
+                    - "ssh -i /path/to/private/key/file.pem root@"
+                    -
+                        Fn::GetAtt:
+                            - "HadoopAuxiliary"
+                            - "PublicIp"
+##    DynDNSMasterNodeDomainName:
+        Description: "Enter this value for the domain name of the master node into the DynDNS account: "
+        Value:
+            Fn::Join:
+                - ""
+                -
+                    - {Ref: MasterNodeName}
+                    - "."
+                    - {Ref: BaseDomain}
+                    - ": "
+                    -
+                        Fn::GetAtt:
+                            - "HadoopMaster"
+                            - "PublicIp"
+    DynDNSAuxilaryNodeDomainName:
+        Description: "Enter this value for the domain name of the auxiliary node into the DynDNS account: "
+        Value:
+            Fn::Join:
+                - ""
+                -
+                    - {Ref: AuxiliaryNodeName}
+                    - "."
+                    - {Ref: BaseDomain}
+                    - ": "
+                    -
+                        Fn::GetAtt:
+                            - "HadoopAuxiliary"
+                            - "PublicIp"
