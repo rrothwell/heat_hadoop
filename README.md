@@ -6,9 +6,9 @@ Deploy an Hadoop cluster on OpenStack with a user defined slave count.
 
 This Heat template, devised for the Havana and Icehouse versions of OpenStack,
 is becoming obsolete for 3 reasons:
-1. Hadoop is changing.
-2. The next version of OpenStack, Juno, will support Hadoop directly via Sahara.
-3. The new template system will be based on HOT.
+1. Hadoop is changing
+2. The next version of OpenStack, Juno, will support Hadoop directly via Sahara
+3. The new template system will be based on HOT
 
 However it might still be useful as a demonstration of a number of tricks
 to get complex deployments working on OpenStack.
