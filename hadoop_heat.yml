@@ -460,7 +460,6 @@ Resources:
                         ./configure_MRv1.sh
                         ./finalise_hadoop_installation.sh
                         ./start_hdfs_master.sh
-                        ./prep_map_reduce.sh
 
 Outputs:
     MasterNodeIp:
@@ -485,7 +484,7 @@ Outputs:
                         Fn::GetAtt:
                             - "HadoopAuxiliary"
                             - "PublicIp"
-##    DynDNSMasterNodeDomainName:
+    DynDNSMasterNodeDomainName:
         Description: "Enter this value for the domain name of the master node into the DynDNS account: "
         Value:
             Fn::Join:
