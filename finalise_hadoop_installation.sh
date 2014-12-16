@@ -53,13 +53,6 @@ while [  $current_time_secs -lt $timeout_secs ]; do
 	fi
 	echo $message
 	
-	message="Installation on slave $hadoop_slave_ip NOT finished." 
-	if sshpass -p $password scp -o StrictHostKeyChecking=no $user\@$hadoop_slave_ip:/tmp/installation_finished ./ >&/dev/null ; then
-		let vm_count=vm_count+1 
-		message="Installation slave on $hadoop_slave_ip finished." ;
-	fi
-	echo $message
-	
 	slave_index=0
 	IFS=","
 	for slave_node_ip in $hadoop_slave_list; do
@@ -102,7 +95,6 @@ fi
 extra_hosts="\n\n# Hadoop Cluster Group\n\
 \n$hadoop_master_ip\t$hadoop_master_domain\t$hadoop_master_name\
 \n$hadoop_auxiliary_ip\t$hadoop_auxiliary_domain\t$hadoop_auxiliary_name\
-\n$hadoop_slave_ip\t$hadoop_slave_domain_0\t$hadoop_slave_name_0"
 
 slave_index=0
 IFS=","
@@ -122,12 +114,6 @@ sshpass -p $password ssh -o StrictHostKeyChecking=no $user\@$hadoop_auxiliary_ip
 	echo -e "$extra_hosts" >> ~/host_list;
 ENDSSH
 
-echo "About to transfer extra hosts to /etc/hosts on slave $hadoop_slave_ip.\n"
-sshpass -p $password ssh -o StrictHostKeyChecking=no $user\@$hadoop_slave_ip 'bash -s' <<ENDSSH
-	touch ~/host_list
-	echo -e "$extra_hosts" >> ~/host_list;
-ENDSSH
-
 IFS=","
 for slave_node_ip in $hadoop_slave_list; do
 	echo "About to transfer extra hosts to /etc/hosts on slave $slave_node_ip.\n"
@@ -141,7 +127,6 @@ done
 
 slave_file="/etc/hadoop/conf.$project_name/slaves"
 sshpass -p $password scp -o StrictHostKeyChecking=no $slave_file $user\@$hadoop_auxiliary_ip:~
-sshpass -p $password scp -o StrictHostKeyChecking=no $slave_file $user\@$hadoop_slave_ip:~
 slave_index=0
 IFS=","
 for slave_node_ip in $hadoop_slave_list; do
@@ -153,7 +138,6 @@ done
 
 zoo_file="/etc/zookeeper/conf.dist/zoo.cfg"
 sshpass -p $password scp -o StrictHostKeyChecking=no $zoo_file $user\@$hadoop_auxiliary_ip:~
-sshpass -p $password scp -o StrictHostKeyChecking=no $zoo_file $user\@$hadoop_slave_ip:~
 slave_index=0
 IFS=","
 for slave_node_ip in $hadoop_slave_list; do
@@ -182,13 +166,6 @@ sshpass -p $password ssh -o StrictHostKeyChecking=no $user\@$hadoop_auxiliary_ip
 ENDSSH
 
 ENSEMBLE_ID=$((ENSEMBLE_ID+1))
-echo "About to trigger finalise on slave $hadoop_slave_ip.\n"
-sshpass -p $password ssh -o StrictHostKeyChecking=no $user\@$hadoop_slave_ip 'bash -s' <<ENDSSH
-	touch ~/finaliser
-	echo $ENSEMBLE_ID  > ~/finaliser
-ENDSSH
-
-ENSEMBLE_ID=$((ENSEMBLE_ID+1))
 IFS=","
 for slave_node_ip in $hadoop_slave_list; do
 	echo "About to trigger finalise on slave $slave_node_ip.\n"
@@ -207,7 +184,6 @@ exit 0
 #export installer_account_password=0^3Dfxx;\
 #export hadoop_slave_count=2;\
 #export hadoop_auxiliary_ip=130.220.208.147;\
-#export hadoop_slave_ip=130.220.208.118;\
 #export hadoop_slave_list=130.56.250.128,130.56.250.196;\
 #~/test.sh
 

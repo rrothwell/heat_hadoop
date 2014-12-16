@@ -58,11 +58,6 @@ sudo -u hdfs hadoop fs -chown mapred:hadoop /tmp/mapred/system
 # Start JobTracker before TaskTracker.
 service hadoop-0.20-mapreduce-jobtracker start
 
-echo "About to start task tracker on slave $hadoop_slave_ip.\n"
-sshpass -p $password ssh -o StrictHostKeyChecking=no $user\@$hadoop_slave_ip 'bash -s' <<ENDSSH
-	touch ~/mapred_start
-ENDSSH
-
 IFS=","
 for slave_node_ip in $hadoop_slave_list; do
 	echo "About to start task tracker on slave $slave_node_ip.\n"
