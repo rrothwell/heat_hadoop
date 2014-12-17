@@ -33,7 +33,7 @@ echo "Expected VM count: $expected_vm_count"
 
 current_time_secs=`date +%s`
 # 5min as seconds
-let duration_secs=10*60	
+let duration_secs=15*60	
 let timeout_secs=current_time_secs+duration_secs
 
 # Loop for timeout.
@@ -71,6 +71,7 @@ while [  $current_time_secs -lt $timeout_secs ]; do
 	let try_counter=try_counter+1 
 	echo "The try count is $try_counter"
 	current_time_secs=`date +%s`
+	echo "Slave polling time: $current_time_secs"
 	
 	sleep 1
 done
