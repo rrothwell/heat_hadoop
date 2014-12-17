@@ -201,7 +201,7 @@ Resources:
                         # Find this in /tmp
                         touch "installation_finished"
                        
-                        # verify Java
+                        # Verify Java
                         java -version
                         
                         echo "One slave installation complete!"
@@ -276,7 +276,7 @@ Resources:
                         # Find this in /tmp
                         touch "installation_finished"
                         
-                        # verify Java
+                        # Verify Java
                         java -version
                         
                         echo "Auxiliary installation complete!"
@@ -380,7 +380,7 @@ Resources:
                         ./finalise_hadoop_installation.sh
                         ./start_hdfs_master.sh
                         
-                        # verify Java
+                        # Verify Java
                         java -version
                         
                         echo "Master installation complete!"
