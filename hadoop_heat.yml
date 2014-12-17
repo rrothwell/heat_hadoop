@@ -36,6 +36,12 @@ Parameters:
         MinValue: "1"
         MaxValue: "100"
         Description: "The number of slave instances to create"
+    SlaveTimeout: # Minutes for master to give up waiting for slaves.
+        Type: "Number"
+        Default: "15"
+        MinValue: "1"
+        MaxValue: "100"
+        Description: "The number of slave instances to create"
     InstanceType:
         Description: "The size of the VM. "
         Type: String
@@ -319,6 +325,7 @@ Resources:
                                 - "HadoopSlaveGroup"
                                 - "InstanceList"
                         _hadoop_slave_count_: {Ref: SlaveCount}
+                        _hadoop_slave_timeout_: {Ref: SlaveTimeout}
                       - |
                         #!/bin/bash -v
                         apt-get update; apt-get upgrade
@@ -364,6 +371,7 @@ Resources:
                         export hadoop_slave_name=_hadoop_slave_name_
                         export hadoop_slave_list=_hadoop_slave_list_
                         export hadoop_slave_count=_hadoop_slave_count_
+                        export hadoop_slave_timeout=_hadoop_slave_timeout_
                         
                         export hadoop_auxiliary_hostname=_hadoop_auxiliary_hostname_
                         export hadoop_auxiliary_ip=_hadoop_auxiliary_ip_

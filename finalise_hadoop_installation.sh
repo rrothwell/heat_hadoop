@@ -26,14 +26,14 @@ echo "Establish configuration that depends on all nodes being up and running."
 user=$installer_account_username
 password=$installer_account_password
 
-let expected_vm_count=hadoop_slave_count+2
+let expected_vm_count=hadoop_slave_count+1
 echo "Expected VM count: $expected_vm_count"
 
 # Setup for timeout.
 
 current_time_secs=`date +%s`
 # 5min as seconds
-let duration_secs=15*60	
+let duration_secs=hadoop_slave_timeout*60	
 let timeout_secs=current_time_secs+duration_secs
 
 # Loop for timeout.
@@ -43,6 +43,8 @@ let timeout_secs=current_time_secs+duration_secs
 
 try_counter=0
 while [  $current_time_secs -lt $timeout_secs ]; do
+
+	echo "Slave polling time: $current_time_secs < $timeout_secs"
 
 	vm_count=0
 	
@@ -71,17 +73,18 @@ while [  $current_time_secs -lt $timeout_secs ]; do
 	let try_counter=try_counter+1 
 	echo "The try count is $try_counter"
 	current_time_secs=`date +%s`
-	echo "Slave polling time: $current_time_secs"
 	
 	sleep 1
 done
+
+echo "Last slave polling time: $current_time_secs < $timeout_secs"
 
 # Verify that timeout did not trigger. If it did we give up.
 
 if [  "$vm_count" -eq "$expected_vm_count" ]; then
 	echo "All VMs now ready to be finalised. "
 else
-	echo "All VMs not ready within time limit. "
+	echo "All VMs NOT ready within time limit. "
 	# Giveup.
 	exit 1
 fi
