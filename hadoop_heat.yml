@@ -130,7 +130,7 @@ Resources:
         Properties:
             # Availability zones here are both required and yet resolutely ignored.
             # Martin says.
-            AvailabilityZones: [Ref: "AvailabilityZone"] # Fn::GetAZs: ""
+            AvailabilityZones: [{Ref: "AvailabilityZone"}] # Fn::GetAZs: ""
             LaunchConfigurationName: {Ref: "HadoopSlaveConfig"}
             Size: {Ref: SlaveCount}
     HadoopSlaveConfig: 
