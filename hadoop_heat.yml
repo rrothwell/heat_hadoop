@@ -73,6 +73,7 @@ Parameters:
             - melbourne-qh2
             - qld
             - sa
+            - tasmania
     BaseDomain: 
         Description: "DynDNS base domain name. Used to synthesise cluster node domain names. "
         Type: String

@@ -33,23 +33,23 @@ password=$installer_account_password
 # Create the HDFS /tmp Directory
 # -------------------------------------------
 
-sudo -u hdfs hadoop fs -mkdir /tmp
-sudo -u hdfs hadoop fs -chmod -R 1777 /tmp
+sudo -u hdfs hdfs dfs -mkdir /tmp
+sudo -u hdfs hdfs dfs -chmod -R 1777 /tmp
 
 # -------------------------------------------
 # Create MapReduce /var directories
 # -------------------------------------------
 
-sudo -u hdfs hadoop fs -mkdir -p /var/lib/hadoop-hdfs/cache/mapred/mapred/staging
-sudo -u hdfs hadoop fs -chmod 1777 /var/lib/hadoop-hdfs/cache/mapred/mapred/staging
-sudo -u hdfs hadoop fs -chown -R mapred /var/lib/hadoop-hdfs/cache/mapred
+sudo -u hdfs hdfs dfs -mkdir -p /var/lib/hadoop-hdfs/cache/mapred/mapred/staging
+sudo -u hdfs hdfs dfs -chmod 1777 /var/lib/hadoop-hdfs/cache/mapred/mapred/staging
+sudo -u hdfs hdfs dfs -chown -R mapred /var/lib/hadoop-hdfs/cache/mapred
 
 # -------------------------------------------
 # Create and Configure the mapred.system.dir Directory in the HDFS
 # -------------------------------------------
 
-sudo -u hdfs hadoop fs -mkdir /tmp/mapred/system
-sudo -u hdfs hadoop fs -chown mapred:hadoop /tmp/mapred/system
+sudo -u hdfs hdfs dfs -mkdir /tmp/mapred/system
+sudo -u hdfs hdfs dfs -chown mapred:hadoop /tmp/mapred/system
 
 # -------------------------------------------
 # Start the map reduce system.
@@ -77,15 +77,15 @@ done
 
 useradd -d /home/joebloggs -m joebloggs
 usermod -a -G hadoop joebloggs
-sudo -u hdfs hadoop fs -mkdir  /user/bbaggins; sudo -u hdfs hadoop fs -chown bbaggins /user/bbaggins
+sudo -u hdfs hdfs dfs -mkdir  /user/bbaggins; sudo -u hdfs hdfs dfs -chown bbaggins /user/bbaggins
 
 useradd -d /home/bbaggins -m bbaggins
 usermod -a -G hadoop bbaggins
-sudo -u hdfs hadoop fs -mkdir  /user/joebloggs; sudo -u hdfs hadoop fs -chown joebloggs /user/joebloggs
+sudo -u hdfs hdfs dfs -mkdir  /user/joebloggs; sudo -u hdfs hdfs dfs -chown joebloggs /user/joebloggs
 
 # Verify.
 # ls /home
-# sudo -u hdfs hadoop fs -ls -R /
+# sudo -u hdfs hdfs dfs -ls -R /
 
 # -------------------------------------------
 # Download test content
@@ -103,25 +103,25 @@ wget http://www.gutenberg.org/cache/epub/19699/pg19699.txt
 cd ~
 cp -R map_reduce-test-data /home/joebloggs
 chown -R joebloggs:hadoop /home/joebloggs/map_reduce-test-data
-sudo -u joebloggs hadoop fs -copyFromLocal /home/joebloggs/map_reduce-test-data /user/joebloggs
+sudo -u joebloggs hdfs dfs -copyFromLocal /home/joebloggs/map_reduce-test-data /user/joebloggs
 
-#sudo -u hdfs hadoop fs -ls -R /
+#sudo -u hdfs hdfs dfs -ls -R /
 
 # -------------------------------------------
 # Define an output directory in the the HDFS
 # -------------------------------------------
 
-sudo -u joebloggs hadoop fs -mkdir -p /user/joebloggs/test_output
-sudo -u joebloggs hadoop fs -chmod ugo+w /user/joebloggs/test_output
+sudo -u joebloggs hdfs dfs -mkdir -p /user/joebloggs/test_output
+sudo -u joebloggs hdfs dfs -chmod ugo+w /user/joebloggs/test_output
 
 # -------------------------------------------
 # Now run the job. Do this by hand.
 # -------------------------------------------
 
 #sudo  -u joebloggs hadoop jar /usr/lib/hadoop-0.20-mapreduce/hadoop-examples.jar wordcount /user/joebloggs/map_reduce-test-data /user/joebloggs/test_output/gutenberg-output
-#sudo -u hdfs hadoop fs -ls -R /
-#sudo -u hdfs hadoop fs -cat /user/joebloggs/test_output/gutenberg-output/part-r-00000
-#sudo -u joebloggs hadoop fs -rm -R /user/joebloggs/test_output/gutenberg-output
+#sudo -u hdfs hdfs dfs -ls -R /
+#sudo -u hdfs hdfs dfs -cat /user/joebloggs/test_output/gutenberg-output/part-r-00000
+#sudo -u joebloggs hdfs dfs -rm -R /user/joebloggs/test_output/gutenberg-output
 
 
 

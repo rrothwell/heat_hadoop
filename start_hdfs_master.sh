@@ -29,5 +29,5 @@ echo "Startup the HDFS file system."
 
 # Format the hdfs file system as the hdfs user.
 # ON the master only is OK.
-sudo -u hdfs hadoop namenode -format
+sudo -u hdfs hdfs namenode -format
 service hadoop-hdfs-namenode start

@@ -32,8 +32,10 @@ echo "Expected VM count: $expected_vm_count"
 # Setup for timeout.
 
 current_time_secs=`date +%s`
+echo "Time out minutes: $hadoop_slave_timeout"
 # 5min as seconds
 let duration_secs=hadoop_slave_timeout*60	
+echo "Time out seconds: $duration_secs"
 let timeout_secs=current_time_secs+duration_secs
 
 # Loop for timeout.
@@ -74,7 +76,7 @@ while [  $current_time_secs -lt $timeout_secs ]; do
 	echo "The try count is $try_counter"
 	current_time_secs=`date +%s`
 	
-	sleep 1
+	sleep 10
 done
 
 echo "Last slave polling time: $current_time_secs < $timeout_secs"
