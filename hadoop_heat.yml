@@ -65,15 +65,15 @@ Parameters:
     AvailabilityZone: 
         Description: "Physical location of the running cluster. "
         Type: String
-        Default: "NCI"
+        Default: "tasmania"
         AllowedValues:
+            - tasmania
             - NCI
             - melbourne
             - melbourne-np
             - melbourne-qh2
             - qld
             - sa
-            - tasmania
     BaseDomain: 
         Description: "DynDNS base domain name. Used to synthesise cluster node domain names. "
         Type: String

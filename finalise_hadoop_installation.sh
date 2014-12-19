@@ -101,6 +101,7 @@ fi
 extra_hosts="\n\n# Hadoop Cluster Group\n\
 \n$hadoop_master_ip\t$hadoop_master_domain\t$hadoop_master_name\
 \n$hadoop_auxiliary_ip\t$hadoop_auxiliary_domain\t$hadoop_auxiliary_name\
+\n"
 
 slave_index=0
 IFS=","
